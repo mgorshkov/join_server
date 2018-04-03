@@ -107,6 +107,7 @@ SYMMETRIC_DIFFERENCE
 ```
 > TRUNCATE A
 < OK
+```
 
 *INTERSECTION* и *SYMMETRIC_DIFFERENCE* имеют идентичный формат вывода
 

@@ -1,49 +1,47 @@
 #pragma once
 
+#include <set>
+
 struct TableRow
 {
-	int id;
-	std::string name;
+	int mId;
+	std::string mname;
+
+	friend bool operator < (const TableRow& left, const TableRow& right)
+	{
+		return left.mId < right.mId;
+	}
 };
 
-using TableIndex = std::map<int, TableRow>;
+using TableIndex = std::set<TableRow>;
 
-enum class TableManagerStatus
+enum class OperationStatus
 {
 	Ok,
 	NoTable,
 	DuplicateRecord
 };
 
+struct TableManagerStatus
+{
+	TableManagerStatus(aStatus = OperationStatus::Ok)
+		: mStatus(aStatus)
+	{
+	}
+	OperationStatus mStatus;
+	std::string mMessage;
+};
+
 class TableManager
 {
 public:
-	TableManager()
-	{
-		mTables["A"] = TableIndex();
-		mTables["B"] = TableIndex();
-	}
+	TableManager();
 
-	TableManagerStatus Insert(const std::string& aTableName, int aId, const std::string& aName)
-	{
-		auto tablesIt = mTables.find(aTableName);
-		if (tablesIt == mTables.end())
-			return TableManagerStatus::NoTable;
-		auto recordIt = tablesIt->find(aId);
-		if (recordIt != tablesIt->end())
-			return TableManagerStatus::DuplicateRecord;
-		tablesIt->insert(std::pair(aId, aName));
-		return TableManagerStatus::Ok;
-	}
+	TableManagerStatus Insert(const std::string& aTableName, const TableRow& aRow);
+	TableManagerStatus Truncate(const std::string& aTableName);
 
-	TableManagerStatus Truncate(const std::string& aTableName)
-	{
-		auto tablesIt = mTables.find(aTableName);
-		if (tablesIt == mTables.end())
-			return TableManagerStatus::NoTable;
-		tablesIt->clear();
-		return TableManagerStatus::Ok;
-	}
+	TableManagerStatus Intersection();
+	TableManagerStatus SymmetricDifference();
 	
 private:
 	std::unordered_map<std::string, TableIndex> mTables;
