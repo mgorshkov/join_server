@@ -1,34 +1,44 @@
 #pragma once
 
-#include <string>
-#include <vector>
-#include <chrono>
-#include <deque>
-
-using Timestamp = std::chrono::system_clock::time_point;
-
-struct Command
+struct TableRow
 {
-    std::string mText;
-    Timestamp mTimestamp;
-};
+    int mId;
+    std::string mname;
 
-struct CommandBatch
-{
-    std::vector<Command> mCommands;
-    Timestamp mTimestamp;
-
-    std::size_t Size() const
+    friend bool operator < (const TableRow& left, const TableRow& right)
     {
-        return mCommands.size();
+        return left.mId < right.mId;
     }
 };
 
-struct Counters
+enum class OperationStatus
 {
-    int mLineCounter{0};
-    int mBlockCounter{0};
-    int mCommandCounter{0};
+    Ok,
+    UnknownCommand,
+    NoTable,
+    DuplicateRecord
 };
 
-using BulkQueue = std::deque<std::string>;
+struct CompleteOperationStatus
+{
+    CompleteOperationStatus(aStatus = OperationStatus::Ok)
+        : mStatus(aStatus)
+    {
+    }
+    OperationStatus mStatus;
+    std::string mMessage;
+};
+
+enum class Command
+{
+    Insert,
+    Truncate,
+    Intersect,
+    SymmetricDifference,    
+};
+
+struct CompleteCommand
+{
+    Command mCommand;
+    TableRow mRow;
+};
