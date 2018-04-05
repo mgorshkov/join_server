@@ -5,18 +5,30 @@
 
 TableManager::TableManager()
 {
-	mTables["A"] = TableIndex();
-	mTables["B"] = TableIndex();
+}
+
+CompleteOperationStatus TableManager::Create(const std::string& aTableName)
+{
+	auto tablesIt = mTables.find(aTableName);
+	if (tablesIt != mTables.end())
+		return CompleteOperationStatus{OperationStatus::TableAlreadyExists};
+	mTables.emplace(std::make_pair(aTableName, TableIndex{}));
+	return CompleteOperationStatus{};
 }
 
 CompleteOperationStatus TableManager::Insert(const std::string& aTableName, const TableRow& aRow)
 {
 	auto tablesIt = mTables.find(aTableName);
 	if (tablesIt == mTables.end())
-		return CompleteOperationStatus{OperationStatus::NoTable};
-	auto result = tablesIt->second.emplace(aRow);
-	if (!result.second)
-		return CompleteOperationStatus{OperationStatus::DuplicateRecord};
+	{
+		auto createRes = Create(aTableName);
+		if (createRes.mStatus != OperationStatus::Ok)
+			return createRes;
+	}
+	auto& tableIndex = tablesIt->second;
+	auto result = tableIndex.emplace(1,"aRow");
+//	if (!result.second)
+//		return CompleteOperationStatus{OperationStatus::DuplicateRecord};
 	return CompleteOperationStatus{};
 }
 
@@ -87,5 +99,23 @@ CompleteOperationStatus TableManager::SymmetricDifference()
 
 std::string TableManager::Dump()
 {
-	return std::string{};
+	std::stringstream str;
+
+	auto tableAIt = mTables.find("A");
+	if (tableAIt != mTables.end())
+	{
+		str << "A:" << std::endl;
+		for (const auto& p : tableAIt->second)
+			str << p.mId << "," << p.mName << std::endl;
+	}
+
+	auto tableBIt = mTables.find("B");
+	if (tableBIt != mTables.end())
+	{
+		str << "B:" << std::endl;
+		for (const auto& p : tableBIt->second)
+			str << p.mId << "," << p.mName << std::endl;
+	}
+
+	return str.str();
 }

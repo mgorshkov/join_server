@@ -22,5 +22,6 @@ public:
 	std::string Dump();
 	
 private:
+	CompleteOperationStatus Create(const std::string& aTableName);
 	std::unordered_map<std::string, TableIndex> mTables;
 };

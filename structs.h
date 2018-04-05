@@ -24,8 +24,36 @@ enum class OperationStatus
     Ok,
     UnknownCommand,
     NoTable,
+    TableAlreadyExists,
     DuplicateRecord
 };
+
+inline std::ostream& operator << (std::ostream& stream, OperationStatus os)
+{
+    std::string status;
+    switch (os)
+    {
+    case OperationStatus::Ok:
+        status = "Ok";
+        break;
+    case OperationStatus::UnknownCommand:
+        status = "UnknownCommand";
+        break;
+    case OperationStatus::NoTable:
+        status = "NoTable";
+        break;
+    case OperationStatus::TableAlreadyExists:
+        status = "TableAlreadyExists";
+        break;
+    case OperationStatus::DuplicateRecord:
+        status = "DuplicateRecord";
+        break;
+    default:
+        status = "Unknown";
+        break;
+    }
+    return stream << status;
+}
 
 struct CompleteOperationStatus
 {
@@ -40,6 +68,13 @@ struct CompleteOperationStatus
     friend bool operator == (const CompleteOperationStatus& left, const CompleteOperationStatus& right)
     {
         return left.mStatus == right.mStatus && left.mMessage == right.mMessage;
+    }
+
+    friend std::ostream& operator << (std::ostream& stream, CompleteOperationStatus os)
+    {
+        stream << os.mStatus;
+        stream << os.mMessage;
+        return stream;
     }
 };
 

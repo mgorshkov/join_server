@@ -18,21 +18,30 @@ struct Fixture
 BOOST_FIXTURE_TEST_CASE(test_insert, Fixture)
 {
     CompleteOperationStatus ok{OperationStatus::Ok, ""};
-    auto result = mTableManager.Insert("A", TableRow{0, "lean"});
-    BOOST_CHECK(result == ok);
-    result = mTableManager.Insert("A", TableRow{1, "sweater"});
-    BOOST_CHECK(result == ok);
-    result = mTableManager.Insert("A", TableRow{2, "frank"});
-    BOOST_CHECK(result == ok);
-    result = mTableManager.Insert("A", TableRow{3, "violation"});
-    BOOST_CHECK(result == ok);
-    result = mTableManager.Insert("A", TableRow{4, "quality"});
-    BOOST_CHECK(result == ok);
-    result = mTableManager.Insert("A", TableRow{5, "precision"});
-    BOOST_CHECK(result == ok);
 
-    const char* output = "0,lean\n1,sweater\n2,frank\n3,violation\n4,quality\n5,precision";
-    BOOST_CHECK_EQUAL(mTableManager.Dump(), std::string(output));
+    auto result = mTableManager.Insert("A", TableRow{0, "lean"});
+  //  BOOST_CHECK_EQUAL(result, ok);
+/*    result = mTableManager.Insert("A", TableRow{1, "sweater"});
+    BOOST_CHECK_EQUAL(result, ok);
+    result = mTableManager.Insert("A", TableRow{2, "frank"});
+    BOOST_CHECK_EQUAL(result, ok);
+    result = mTableManager.Insert("A", TableRow{3, "violation"});
+    BOOST_CHECK_EQUAL(result, ok);
+    result = mTableManager.Insert("A", TableRow{4, "quality"});
+    BOOST_CHECK_EQUAL(result, ok);
+    result = mTableManager.Insert("A", TableRow{5, "precision"});
+    BOOST_CHECK_EQUAL(result, ok);
+*/
+    std::stringstream str;
+    str << "A:" << std::endl;
+    str << "0,lean" << std::endl;
+    str << "1,sweater" << std::endl;
+    str << "2,frank" << std::endl;
+    str << "3,violation" << std::endl;
+    str << "4,quality" << std::endl;
+    str << "5,precision";
+    
+    BOOST_CHECK_EQUAL(mTableManager.Dump(), str.str());
 }
 
 BOOST_FIXTURE_TEST_CASE(test_truncate, Fixture)
@@ -68,7 +77,14 @@ BOOST_FIXTURE_TEST_CASE(test_intersection, Fixture)
 
     auto result = mTableManager.Intersection();
     BOOST_CHECK_EQUAL(result.mStatus, OperationStatus::Ok);
-    BOOST_CHECK_EQUAL(result.mMessage, "3,violation,proposal\n4,quality,example\n5,precision,lake");
+
+    std::stringstream str;
+    str << "A:" << std::endl;
+    str << "3,violation,proposal" << std::endl;
+    str << "4,quality,example" << std::endl;
+    str << "5,precision,lake" << std::endl;
+
+    BOOST_CHECK_EQUAL(result.mMessage, str.str());
 }
 
 BOOST_FIXTURE_TEST_CASE(test_symmetric_difference, Fixture)
@@ -88,8 +104,17 @@ BOOST_FIXTURE_TEST_CASE(test_symmetric_difference, Fixture)
     mTableManager.Insert("B", TableRow{8, "selection"});
 
     auto result = mTableManager.SymmetricDifference();
-    //BOOST_CHECK_EQUAL(result.mStatus, OperationStatus::Ok);
-    //BOOST_CHECK_EQUAL(result.mMessage, "0,lean,\n1,sweater,\n2,frank,\n6,,flour\n7,,wonder\n8,,selection");
+    BOOST_CHECK_EQUAL(result.mStatus, OperationStatus::Ok);
+
+    std::stringstream str;
+    str << "0,lean," << std::endl;
+    str << "1,sweater," << std::endl;
+    str << "2,frank," << std::endl;
+    str << "6,,flour" << std::endl;
+    str << "7,,wonder" << std::endl;
+    str << "8,,selection";
+
+    BOOST_CHECK_EQUAL(result.mMessage, "0,lean,\n1,sweater,\n2,frank,\n6,,flour\n7,,wonder\n8,,selection");
 }
 
 }
