@@ -128,14 +128,13 @@ void Context::ProcessStream(std::shared_ptr<CommandExecutor> aCommandExecutor)
     }
 }
 
-void Context::ThreadProc(Context* aContext, std::shared_ptr<CommandProcessor> aCommandProcessor)
+void Context::ThreadProc(Context* aContext, std::shared_ptr<CommandExecutor> aCommandExecutor)
 {
 #ifdef DEBUG_PRINT
     std::cout << "Context::ThreadProc start, this==" << aContext << std::endl;
 #endif
     try
     {
-        aCommandProcessor->Start();
         while (!aContext->mDone.load())
         {
 #ifdef DEBUG_PRINT
@@ -148,14 +147,13 @@ void Context::ThreadProc(Context* aContext, std::shared_ptr<CommandProcessor> aC
             std::cout << "Context::ThreadProc01, this==" << aContext << std::endl;
 #endif
             lk.unlock();
-            aContext->ProcessStream(aCommandProcessor);
+            aContext->ProcessStream(aCommandExecutor);
             aContext->mNotified = false;
         }
 #ifdef DEBUG_PRINT
         std::cout << "Context::ThreadProc1, this==" << aContext << std::endl;
 #endif
-        aContext->ProcessStream(aCommandProcessor);        
-        aCommandProcessor->Stop();
+        aContext->ProcessStream(aCommandExecutor);
 #ifdef DEBUG_PRINT
         std::cout << "Context::ThreadProc2, this==" << aContext << std::endl;
 #endif

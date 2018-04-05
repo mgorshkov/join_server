@@ -1,40 +1,51 @@
-#pragma once
+#include "commandexecutor.h"
 
 CommandExecutor::CommandExecutor(ITableManager* aTableManager)
 	: mTableManager(aTableManager)
 {
 }
 
-CompleteStatus CommandExecutor::RunCommand(const CompleteCommand& aCommand)
+CompleteOperationStatus CommandExecutor::RunCommand(const std::string& aLine)
 {
-	return mTableManager.
+    CompleteCommand command = Parse(aLine);
+    switch (command.mCommand)
+    {
+    case Command::Insert:
+	return mTableManager->Insert(command.mTableName, command.mRow);
+    case Command::Truncate:
+	return mTableManager->Truncate(command.mTableName);
+    case Command::Intersection:
+	return mTableManager->Intersection();
+    case Command::SymmetricDifference:
+	return mTableManager->SymmetricDifference();
+    }
 }
 
 CompleteCommand CommandExecutor::Parse(const std::string& aLine)
 {
-	auto it = aLine.find(CommandInsert);
-	if (it != aLine.end())
-		return HandleInsert(aLine.substr(it, aLine.end()));
-	it = aLine.find(CommandTruncate);
-	if (it != aLine.end())
-		return HandleTruncate(aLine.substr(it, aLine.end()));
-	it = aLine.find(CommandIntersect);
-	if (it != aLine.end())
-		return HandleIntersect(aLine.substr(it, aLine.end()));
-	it = aLine.find(CommandSymmetricDifference);
-	if (it != aLine.end())
-		return HandleSymmetricDifference(aLine.substr(it, aLine.end()));
+	auto pos = aLine.find(CommandInsert);
+	if (pos != std::string::npos)
+		return HandleInsert(aLine.substr(pos, aLine.size()));
+	pos = aLine.find(CommandTruncate);
+	if (pos != std::string::npos)
+		return HandleTruncate(aLine.substr(pos, aLine.size()));
+	pos = aLine.find(CommandIntersection);
+	if (pos != std::string::npos)
+		return HandleIntersection(aLine.substr(pos, aLine.size()));
+	pos = aLine.find(CommandSymmetricDifference);
+	if (pos != std::string::npos)
+		return HandleSymmetricDifference(aLine.substr(pos, aLine.size()));
 	
-	return InvalidCommand;
+	return CompleteCommand{Command::Error};
 }
 
 CompleteCommand CommandExecutor::HandleInsert(const std::string& aLine)
 {
-	auto it = aLine.find(' ');
-	if (it == aLine.end())
-		return InvalidCommand;
+	auto pos = aLine.find(' ');
+	if (pos == std::string::npos)
+		return CompleteCommand{Command::Error};
 
-	int id = std::atoi(aLine.substr(0, it));
+	int id = std::atoi(aLine.substr(0, pos).c_str());
 	return CompleteCommand{Command::Insert};
 }
 
@@ -43,9 +54,9 @@ CompleteCommand CommandExecutor::HandleTruncate(const std::string& aLine)
 	return CompleteCommand{Command::Truncate};
 }
 
-CompleteCommand CommandExecutor::HandleIntersect(const std::string& aLine)
+CompleteCommand CommandExecutor::HandleIntersection(const std::string& aLine)
 {
-	return CompleteCommand{Command::Intersect};
+	return CompleteCommand{Command::Intersection};
 }
 
 CompleteCommand CommandExecutor::HandleSymmetricDifference(const std::string& aLine)

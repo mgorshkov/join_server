@@ -11,6 +11,10 @@ if (DEBUG_PRINT)
 endif()
 
 add_executable(join_server
+	commandexecutor.cpp
+	commandexecutor.h
+	context.cpp
+	context.h
 	server.cpp
 	server.h
 	session.cpp

@@ -3,10 +3,10 @@
 #include "server.h"
 #include "session.h"
 
-Server::Server(boost::asio::io_service& aIoService, const tcp::endpoint& aEndPoint)
+Server::Server(boost::asio::io_service& aIoService, const boost::asio::ip::tcp::endpoint& aEndPoint)
     : mAcceptor(aIoService)
     , mSocket(aIoService)
-    , mCommandExecutor(std::make_shared<CommandExecutor>(&mTableManager))
+    , mCommandExecutor(&mTableManager)
 {
     DoAccept();
 }
@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
         boost::asio::io_service ioService;
 
         int port = std::atoi(argv[1]);
-        tcp::endpoint endpoint(tcp::v4(), port);
+        boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), port);
         Server server(ioService, endpoint);
 
         ioService.run();

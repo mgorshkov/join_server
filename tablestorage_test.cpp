@@ -19,20 +19,20 @@ BOOST_FIXTURE_TEST_CASE(test_insert, Fixture)
 {
     CompleteOperationStatus ok{OperationStatus::Ok, ""};
     auto result = mTableManager.Insert("A", TableRow{0, "lean"});
-    //BOOST_CHECK_EQUAL(result, ok);
+    BOOST_CHECK(result == ok);
     result = mTableManager.Insert("A", TableRow{1, "sweater"});
-    //BOOST_CHECK_EQUAL(result, ok);
+    BOOST_CHECK(result == ok);
     result = mTableManager.Insert("A", TableRow{2, "frank"});
-    //BOOST_CHECK_EQUAL(result, ok);
+    BOOST_CHECK(result == ok);
     result = mTableManager.Insert("A", TableRow{3, "violation"});
-    //BOOST_CHECK_EQUAL(result, ok);
+    BOOST_CHECK(result == ok);
     result = mTableManager.Insert("A", TableRow{4, "quality"});
-    //BOOST_CHECK_EQUAL(result, ok);
+    BOOST_CHECK(result == ok);
     result = mTableManager.Insert("A", TableRow{5, "precision"});
-    //BOOST_CHECK_EQUAL(result, ok);
+    BOOST_CHECK(result == ok);
 
     const char* output = "0,lean\n1,sweater\n2,frank\n3,violation\n4,quality\n5,precision";
-    //BOOST_CHECK_EQUAL(mTableManager.Dump(), std::string(output));
+    BOOST_CHECK_EQUAL(mTableManager.Dump(), std::string(output));
 }
 
 BOOST_FIXTURE_TEST_CASE(test_truncate, Fixture)
@@ -47,7 +47,7 @@ BOOST_FIXTURE_TEST_CASE(test_truncate, Fixture)
     mTableManager.Truncate("A");
 
     const char* output = "";
-    //BOOST_CHECK_EQUAL(mTableManager.Dump(), output);
+    BOOST_CHECK_EQUAL(mTableManager.Dump(), output);
 }
 
 BOOST_FIXTURE_TEST_CASE(test_intersection, Fixture)
@@ -67,8 +67,8 @@ BOOST_FIXTURE_TEST_CASE(test_intersection, Fixture)
     mTableManager.Insert("B", TableRow{8, "selection"});
 
     auto result = mTableManager.Intersection();
-    //BOOST_CHECK_EQUAL(result.mStatus, OperationStatus::Ok);
-    //BOOST_CHECK_EQUAL(result.mMessage, "3,violation,proposal\n4,quality,example\n5,precision,lake");
+    BOOST_CHECK_EQUAL(result.mStatus, OperationStatus::Ok);
+    BOOST_CHECK_EQUAL(result.mMessage, "3,violation,proposal\n4,quality,example\n5,precision,lake");
 }
 
 BOOST_FIXTURE_TEST_CASE(test_symmetric_difference, Fixture)

@@ -7,7 +7,7 @@ struct TableRow
     int mId;
     std::string mName;
 
-    TableRow(int aId, const std::string& aName = "")
+    TableRow(int aId = -1, const std::string& aName = "")
         : mId(aId)
         , mName(aName)
     {
@@ -47,12 +47,14 @@ enum class Command
 {
     Insert,
     Truncate,
-    Intersect,
+    Intersection,
     SymmetricDifference,
+    Error,
 };
 
 struct CompleteCommand
 {
     Command mCommand;
+    std::string mTableName;
     TableRow mRow;
 };

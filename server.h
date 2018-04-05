@@ -13,9 +13,9 @@ public:
 private:
     void DoAccept();
 
-    tcp::acceptor mAcceptor;
-    tcp::socket mSocket;
+    boost::asio::ip::tcp::acceptor mAcceptor;
+    boost::asio::ip::tcp::socket mSocket;
 
     TableManager mTableManager;
-    std::shared_ptr<CommandExecutor> mCommandExecutor;
+    CommandExecutor mCommandExecutor;
 };
