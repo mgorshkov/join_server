@@ -1,9 +1,12 @@
+#include <iostream>
+
 #include "server.h"
 #include "session.h"
 
 Server::Server(boost::asio::io_service& aIoService, const tcp::endpoint& aEndPoint)
     : mAcceptor(aIoService)
     , mSocket(aIoService)
+    , mCommandExecutor(std::make_shared<CommandExecutor>(&mTableManager))
 {
     DoAccept();
 }
@@ -14,7 +17,7 @@ void Server::DoAccept()
         [this](boost::system::error_code ec)
         {
             if (!ec)
-                std::make_shared<Session>(std::move(mSocket), mCommandProcessor)->Start();
+                std::make_shared<Session>(std::move(mSocket), mCommandExecutor)->Start();
 
             DoAccept();
         });

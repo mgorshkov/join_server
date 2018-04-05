@@ -7,7 +7,7 @@
 #include <condition_variable>
 #include <atomic>
 
-#include "commandprocessor.h"
+#include "commandexecutor.h"
 
 class Context
 {
@@ -15,7 +15,7 @@ public:
     Context();
     ~Context();
 
-    void SetProcessor(std::shared_ptr<CommandProcessor> aCommandProcessor);
+    void SetExecutor(std::shared_ptr<CommandExecutor> aCommandExecutor);
 
     void ProcessData(const char* aData, std::size_t aSize);
 
@@ -23,11 +23,11 @@ public:
     void Stop();
 
 private:
-    void ProcessStream(std::shared_ptr<CommandProcessor> aCommandProcessor);
+    void ProcessStream(std::shared_ptr<CommandExecutor> aCommandExecutor);
 
-    static void ThreadProc(Context* aContext, std::shared_ptr<CommandProcessor> aCommandProcessor);
+    static void ThreadProc(Context* aContext, std::shared_ptr<CommandExecutor> aCommandExecutor);
 
-    std::shared_ptr<CommandProcessor> mCommandProcessor;
+    std::shared_ptr<CommandExecutor> mCommandExecutor;
 
     std::stringstream mStream;
     std::mutex mStreamMutex;

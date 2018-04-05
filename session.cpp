@@ -2,6 +2,8 @@
 
 #include "session.h"
 
+using boost::asio::ip::tcp;
+
 Session::Session(tcp::socket aSocket, std::shared_ptr<CommandExecutor> aCommandExecutor)
     : mSocket(std::move(aSocket))
 {

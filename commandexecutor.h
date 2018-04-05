@@ -1,11 +1,14 @@
 #pragma once
 
+#include "itablemanager.h"
+#include "structs.h"
+
 class CommandExecutor
 {
 public:
 	CommandExecutor(ITableManager* aTableManager);
 
-	CompleteStatus RunCommand(const std::string& aLine);
+	CompleteOperationStatus RunCommand(const std::string& aLine);
 
 private:
 	CompleteCommand Parse(const std::string& aLine);
@@ -17,8 +20,8 @@ private:
 
 	ITableManager* mTableManager;
 
-	static const char* CommandInsert = "INSERT";
-	static const char* CommandTruncate = "TRUNCATE";
-	static const char* CommandIntersection = "INTERSECTION";
-	static const char* CommandSymmetricDifference = "SYMMETRIC_DIFFERENCE";
+	static constexpr const char* CommandInsert = "INSERT";
+	static constexpr const char* CommandTruncate = "TRUNCATE";
+	static constexpr const char* CommandIntersection = "INTERSECTION";
+	static constexpr const char* CommandSymmetricDifference = "SYMMETRIC_DIFFERENCE";
 };

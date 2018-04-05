@@ -1,13 +1,16 @@
 #pragma once
 
+#include <string>
+#include "structs.h"
+
 class ITableManager
 {
 public:
-	virtrual ~ITableManager() = default;
+	virtual ~ITableManager() = default;
 
-	virtual TableManagerStatus Insert(const std::string& aTableName, const TableRow& aRow) = 0;
-	virtual TableManagerStatus Truncate(const std::string& aTableName) = 0;
+	virtual CompleteOperationStatus Insert(const std::string& aTableName, const TableRow& aRow) = 0;
+	virtual CompleteOperationStatus Truncate(const std::string& aTableName) = 0;
 
-	virtual TableManagerStatus Intersection() = 0;
-	virtual TableManagerStatus SymmetricDifference() = 0;
+	virtual CompleteOperationStatus Intersection() = 0;
+	virtual CompleteOperationStatus SymmetricDifference() = 0;
 };

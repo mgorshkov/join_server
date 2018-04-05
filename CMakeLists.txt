@@ -18,14 +18,14 @@ add_executable(join_server
 
 add_executable(join_server_test tablestorage_test.cpp)
 
-add_library(join_server tablestorage.cpp)
+add_library(join_server_lib tablestorage.cpp)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME ON)
 find_package(Threads REQUIRED)
-find_package(Boost REQUIRED COMPONENTS system filesystem)
+find_package(Boost REQUIRED COMPONENTS system filesystem unit_test_framework)
 
 set_target_properties(join_server join_server_test PROPERTIES
 	COMPILE_OPTIONS -Wpedantic -Wall -Wextra
@@ -34,15 +34,15 @@ set_target_properties(join_server join_server_test PROPERTIES
 )
 
 target_link_libraries(join_server
-        ${Boost_LIBRARIES}
-        ${CMAKE_THREAD_LIBS_INIT}
-	join_server
+	${Boost_LIBRARIES}
+	${CMAKE_THREAD_LIBS_INIT}
+	join_server_lib
 )
 
 target_link_libraries(join_server_test
-        ${Boost_LIBRARIES}
-        ${CMAKE_THREAD_LIBS_INIT}
-	join_server
+	${Boost_LIBRARIES}
+	${CMAKE_THREAD_LIBS_INIT}
+	join_server_lib
 )
 
 install(TARGETS join_server DESTINATION bin)

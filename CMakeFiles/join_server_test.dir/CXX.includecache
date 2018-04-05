@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/mgorshkov/Work/join_server/itablemanager.h
+string
+-
+structs.h
+/home/mgorshkov/Work/join_server/structs.h
+
+/home/mgorshkov/Work/join_server/structs.h
+string
+-
+
+/home/mgorshkov/Work/join_server/tablestorage.h
+set
+-
+unordered_map
+-
+structs.h
+/home/mgorshkov/Work/join_server/structs.h
+itablemanager.h
+/home/mgorshkov/Work/join_server/itablemanager.h
+
+/home/mgorshkov/Work/join_server/tablestorage_test.cpp
+boost/test/unit_test.hpp
+-
+tablestorage.h
+/home/mgorshkov/Work/join_server/tablestorage.h
+

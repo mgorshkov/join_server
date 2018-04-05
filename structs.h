@@ -1,9 +1,17 @@
 #pragma once
 
+#include <string>
+
 struct TableRow
 {
     int mId;
-    std::string mname;
+    std::string mName;
+
+    TableRow(int aId, const std::string& aName = "")
+        : mId(aId)
+        , mName(aName)
+    {
+    }
 
     friend bool operator < (const TableRow& left, const TableRow& right)
     {
@@ -21,12 +29,18 @@ enum class OperationStatus
 
 struct CompleteOperationStatus
 {
-    CompleteOperationStatus(aStatus = OperationStatus::Ok)
+    CompleteOperationStatus(OperationStatus aStatus = OperationStatus::Ok, const std::string& aMessage = "")
         : mStatus(aStatus)
+        , mMessage(aMessage)
     {
     }
     OperationStatus mStatus;
     std::string mMessage;
+
+    friend bool operator == (const CompleteOperationStatus& left, const CompleteOperationStatus& right)
+    {
+        return left.mStatus == right.mStatus && left.mMessage == right.mMessage;
+    }
 };
 
 enum class Command
@@ -34,7 +48,7 @@ enum class Command
     Insert,
     Truncate,
     Intersect,
-    SymmetricDifference,    
+    SymmetricDifference,
 };
 
 struct CompleteCommand

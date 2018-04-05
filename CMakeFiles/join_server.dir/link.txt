@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/join_server.dir/server.cpp.o CMakeFiles/join_server.dir/session.cpp.o  -o join_server /usr/lib/libboost_system.a /usr/lib/libboost_filesystem.a /usr/lib/libboost_unit_test_framework.a -pthread libjoin_server_lib.a 
