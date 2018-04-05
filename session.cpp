@@ -2,12 +2,9 @@
 
 #include "session.h"
 
-Session::Session(tcp::socket aSocket, std::shared_ptr<CommandProcessor> aCommandProcessor)
+Session::Session(tcp::socket aSocket, std::shared_ptr<CommandExecutor> aCommandExecutor)
     : mSocket(std::move(aSocket))
 {
-    auto processor = std::make_shared<InputProcessor>("main", std::vector<std::shared_ptr<ICommandProcessor>>{aCommandProcessor});
-    mContext.SetProcessor(processor);
-
 #ifdef DEBUG_PRINT
     std::cout << "Session::Session, this==" << this << std::endl;
 #endif

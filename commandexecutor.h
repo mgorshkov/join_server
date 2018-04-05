@@ -9,6 +9,11 @@ public:
 
 private:
 	CompleteCommand Parse(const std::string& aLine);
+	
+	CompleteCommand HandleInsert(const std::string& aLine);
+	CompleteCommand HandleTruncate(const std::string& aLine);
+	CompleteCommand HandleIntersect(const std::string& aLine);
+	CompleteCommand HandleSymmetricDifference(const std::string& aLine);	
 
 	ITableManager* mTableManager;
 

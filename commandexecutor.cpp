@@ -12,18 +12,44 @@ CompleteStatus CommandExecutor::RunCommand(const CompleteCommand& aCommand)
 
 CompleteCommand CommandExecutor::Parse(const std::string& aLine)
 {
-	if (aLine.find(CommandInsert) == 0)
-	{
+	auto it = aLine.find(CommandInsert);
+	if (it != aLine.end())
+		return HandleInsert(aLine.substr(it, aLine.end()));
+	it = aLine.find(CommandTruncate);
+	if (it != aLine.end())
+		return HandleTruncate(aLine.substr(it, aLine.end()));
+	it = aLine.find(CommandIntersect);
+	if (it != aLine.end())
+		return HandleIntersect(aLine.substr(it, aLine.end()));
+	it = aLine.find(CommandSymmetricDifference);
+	if (it != aLine.end())
+		return HandleSymmetricDifference(aLine.substr(it, aLine.end()));
+	
+	return InvalidCommand;
+}
 
-	}
-	else if (aLine.find(CommandTruncate) == 0)
-	{
+CompleteCommand CommandExecutor::HandleInsert(const std::string& aLine)
+{
+	auto it = aLine.find(' ');
+	if (it == aLine.end())
+		return InvalidCommand;
 
-	}
-	else if (aLine.find(CommandIntersect) == 0)
-	{
+	int id = std::atoi(aLine.substr(0, it));
+	return CompleteCommand{Command::Insert};
+}
 
-	}
-	else if (aLine.find(CommandSymmetricDifference) == 0)
+CompleteCommand CommandExecutor::HandleTruncate(const std::string& aLine)
+{
+	return CompleteCommand{Command::Truncate};
+}
+
+CompleteCommand CommandExecutor::HandleIntersect(const std::string& aLine)
+{
+	return CompleteCommand{Command::Intersect};
+}
+
+CompleteCommand CommandExecutor::HandleSymmetricDifference(const std::string& aLine)
+{
+	return CompleteCommand{Command::SymmetricDifference};
 }
 
