@@ -3,119 +3,130 @@
 
 #include "tablestorage.h"
 
-TableManager::TableManager()
-{
-}
+const char* TableManager::TableNames[TableManager::TableCount] = { "A", "B" };
 
 CompleteOperationStatus TableManager::Create(const std::string& aTableName)
 {
-	auto tablesIt = mTables.find(aTableName);
-	if (tablesIt != mTables.end())
-		return CompleteOperationStatus{OperationStatus::TableAlreadyExists};
-	mTables.emplace(std::make_pair(aTableName, TableIndex{}));
-	return CompleteOperationStatus{};
+    auto tablesIt = mTables.find(aTableName);
+    if (tablesIt != mTables.end())
+        return CompleteOperationStatus{OperationStatus::TableAlreadyExists};
+    mTables.insert(std::make_pair(aTableName, TableIndex{}));
+    return CompleteOperationStatus{};
 }
 
 CompleteOperationStatus TableManager::Insert(const std::string& aTableName, const TableRow& aRow)
 {
-	auto tablesIt = mTables.find(aTableName);
-	if (tablesIt == mTables.end())
-	{
-		auto createRes = Create(aTableName);
-		if (createRes.mStatus != OperationStatus::Ok)
-			return createRes;
-	}
-	auto& tableIndex = tablesIt->second;
-	auto result = tableIndex.emplace(1,"aRow");
-//	if (!result.second)
-//		return CompleteOperationStatus{OperationStatus::DuplicateRecord};
-	return CompleteOperationStatus{};
+    auto tablesIt = mTables.find(aTableName);
+    if (tablesIt == mTables.end())
+    {
+        auto createRes = Create(aTableName);
+        if (createRes.mStatus != OperationStatus::Ok)
+            return createRes;
+        tablesIt = mTables.find(aTableName);
+    }
+    auto result = tablesIt->second.emplace(aRow);
+    if (!result.second)
+        return CompleteOperationStatus{OperationStatus::DuplicateRecord};
+    return CompleteOperationStatus{};
 }
 
 CompleteOperationStatus TableManager::Truncate(const std::string& aTableName)
 {
-	auto tablesIt = mTables.find(aTableName);
-	if (tablesIt == mTables.end())
-		return CompleteOperationStatus{OperationStatus::NoTable};
-	tablesIt->second.clear();
-	return CompleteOperationStatus{};
+    auto tablesIt = mTables.find(aTableName);
+    if (tablesIt == mTables.end())
+        return CompleteOperationStatus{OperationStatus::NoTable};
+    tablesIt->second.clear();
+    return CompleteOperationStatus{};
+}
+
+void TableManager::FindAndPrintIfFound(
+    const TableIndex& aIndex,
+    const TableRow& aRow,
+    std::ostream& aStr,
+    std::size_t aTableNumber)
+{
+    auto it = aIndex.find(TableRow{aRow.mId});
+    if (it != aIndex.end())
+        aStr
+            << aRow.mId
+            << ","
+            << (aTableNumber == 0 ? aRow.mName : it->mName)
+            << ","
+            << (aTableNumber == 0 ? it->mName : aRow.mName)
+            << std::endl;
+}
+
+void TableManager::FindAndPrintIfNotFound(
+    const TableIndex& aIndex,
+    const TableRow& aRow,
+    std::ostream& aStr,
+    std::size_t aTableNumber)
+{
+    auto it = aIndex.find(TableRow{aRow.mId});
+    if (it == aIndex.end())
+        aStr
+            << aRow.mId
+            << ","
+            << (aTableNumber == 0 ? "" : ",")
+            << aRow.mName
+            << (aTableNumber != 0 ? "" : ",")
+            << std::endl;
 }
 
 CompleteOperationStatus TableManager::Intersection()
 {
-	auto tableAIt = mTables.find("A");
-	assert (tableAIt != mTables.end());
+    std::size_t maxSizeIndex = -1;
+    std::size_t maxSize = static_cast<std::size_t>(-1);
+    TableMap::const_iterator it[TableCount];
+    for (std::size_t i = 0; i < TableCount; ++i)
+    {
+        it[i] = mTables.find(TableNames[i]);
+        assert (it[i] != mTables.end());
 
-	auto tableBIt = mTables.find("B");
-	assert (tableBIt != mTables.end());
+        if (it[i]->second.size() < maxSize)
+            maxSizeIndex = i;
+    }
 
-	std::stringstream str;
+    std::stringstream str;
 
-	if (tableAIt->second.size() < tableBIt->second.size())
-	{
-		for (const auto& p : tableAIt->second)
-		{
-			auto bIt = tableBIt->second.find(TableRow{p.mId});
-			if (bIt != tableBIt->second.end())
-				str << p.mId << "," << p.mName << "," << bIt->mName << std::endl;
-		}
-	}
-	else
-	{
-		for (const auto& p : tableBIt->second)
-		{
-			auto aIt = tableAIt->second.find(TableRow{p.mId});
-			if (aIt != tableAIt->second.end())
-				str << p.mId << "," << aIt->mName << "," << p.mName << std::endl;
-		}
-	}
-	return CompleteOperationStatus{OperationStatus::Ok, str.str()};
+    for (const auto& p : it[maxSizeIndex]->second)
+        FindAndPrintIfFound(it[TableCount - maxSizeIndex - 1]->second, p, str, maxSizeIndex);
+
+    return CompleteOperationStatus{OperationStatus::Ok, str.str()};
 }
 
 CompleteOperationStatus TableManager::SymmetricDifference()
 {
-	auto tableAIt = mTables.find("A");
-	assert (tableAIt != mTables.end());
+    std::stringstream str;
 
-	auto tableBIt = mTables.find("B");
-	assert (tableBIt != mTables.end());
-
-	std::stringstream str;
-	
-	for (const auto& p : tableAIt->second)
-	{
-		auto bIt = tableBIt->second.find(TableRow{p.mId});
-		if (bIt == tableBIt->second.end())
-			str << p.mId << "," << p.mName << "," << std::endl;
-	}
-	for (const auto& p : tableBIt->second)
-	{
-		auto aIt = tableAIt->second.find(TableRow{p.mId});
-		if (aIt == tableAIt->second.end())
-			str << p.mId << ",," << p.mName << std::endl;
-	}
-	return CompleteOperationStatus{OperationStatus::Ok, str.str()};
+    TableMap::const_iterator it[TableCount];
+    for (std::size_t i = 0; i < TableCount; ++i)
+    {
+        it[i] = mTables.find(TableNames[i]);
+        assert (it[i] != mTables.end());
+    }
+    for (std::size_t i = 0; i < TableCount; ++i)
+    {
+        for (const auto& p : it[i]->second)
+            FindAndPrintIfNotFound(it[TableCount - i - 1]->second, p, str, i);
+    }
+    return CompleteOperationStatus{OperationStatus::Ok, str.str()};
 }
 
 std::string TableManager::Dump()
 {
-	std::stringstream str;
+    std::stringstream str;
 
-	auto tableAIt = mTables.find("A");
-	if (tableAIt != mTables.end())
-	{
-		str << "A:" << std::endl;
-		for (const auto& p : tableAIt->second)
-			str << p.mId << "," << p.mName << std::endl;
-	}
+    for (const auto& tableName : TableNames)
+    {
+        auto it = mTables.find(tableName);
+        if (it != mTables.end())
+        {
+            str << tableName << ":" << std::endl;
+            for (const auto& p : it->second)
+                str << p.mId << "," << p.mName << std::endl;
+        }
+    }
 
-	auto tableBIt = mTables.find("B");
-	if (tableBIt != mTables.end())
-	{
-		str << "B:" << std::endl;
-		for (const auto& p : tableBIt->second)
-			str << p.mId << "," << p.mName << std::endl;
-	}
-
-	return str.str();
+    return str.str();
 }
