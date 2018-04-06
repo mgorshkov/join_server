@@ -1,2 +1,0 @@
-/usr/bin/ar qc libjoin_server_lib.a  CMakeFiles/join_server_lib.dir/tablestorage.cpp.o
-/usr/bin/ranlib libjoin_server_lib.a

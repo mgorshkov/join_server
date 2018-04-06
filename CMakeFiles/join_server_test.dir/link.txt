@@ -1,1 +1,0 @@
-/usr/bin/c++     CMakeFiles/join_server_test.dir/tablestorage_test.cpp.o  -o join_server_test /usr/lib/libboost_system.a /usr/lib/libboost_filesystem.a /usr/lib/libboost_unit_test_framework.a -pthread libjoin_server_lib.a 
