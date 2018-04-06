@@ -22,6 +22,8 @@ add_executable(join_server
 
 add_executable(join_server_test tablestorage_test.cpp)
 
+add_executable(join_client client.cpp)
+
 add_library(join_server_lib tablestorage.cpp)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
@@ -47,6 +49,11 @@ target_link_libraries(join_server_test
 	${Boost_LIBRARIES}
 	${CMAKE_THREAD_LIBS_INIT}
 	join_server_lib
+)
+
+target_link_libraries(join_client
+	${Boost_LIBRARIES}
+	${CMAKE_THREAD_LIBS_INIT}
 )
 
 install(TARGETS join_server DESTINATION bin)
