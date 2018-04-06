@@ -6,22 +6,22 @@
 class CommandExecutor
 {
 public:
-	CommandExecutor(ITableManager* aTableManager);
+    CommandExecutor(ITableManager* aTableManager);
 
-	CompleteOperationStatus RunCommand(const std::string& aLine);
+    CompleteOperationStatus RunCommand(const std::string& aLine);
 
 private:
-	CompleteCommand Parse(const std::string& aLine);
-	
-	CompleteCommand HandleInsert(const std::string& aLine);
-	CompleteCommand HandleTruncate(const std::string& aLine);
-	CompleteCommand HandleIntersection(const std::string& aLine);
-	CompleteCommand HandleSymmetricDifference(const std::string& aLine);
+    CompleteCommand Parse(const std::string& aLine);
 
-	ITableManager* mTableManager;
+    CompleteCommand HandleInsert(const std::string& aLine);
+    CompleteCommand HandleTruncate(const std::string& aLine);
+    CompleteCommand HandleIntersection(const std::string& aLine);
+    CompleteCommand HandleSymmetricDifference(const std::string& aLine);
 
-	static constexpr const char* CommandInsert = "INSERT";
-	static constexpr const char* CommandTruncate = "TRUNCATE";
-	static constexpr const char* CommandIntersection = "INTERSECTION";
-	static constexpr const char* CommandSymmetricDifference = "SYMMETRIC_DIFFERENCE";
+    ITableManager* mTableManager;
+
+    static constexpr const char* CommandInsert = "INSERT";
+    static constexpr const char* CommandTruncate = "TRUNCATE";
+    static constexpr const char* CommandIntersection = "INTERSECTION";
+    static constexpr const char* CommandSymmetricDifference = "SYMMETRIC_DIFFERENCE";
 };

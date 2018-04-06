@@ -1,3 +1,4 @@
+#include <deque>
 #include <iostream>
 #include <thread>
 #include <boost/asio.hpp>
@@ -69,7 +70,7 @@ private:
 private:
     boost::asio::io_service& mIoService;
     tcp::socket mSocket;
-    BulkQueue mWriteMsgs;
+    std::deque<std::string> mWriteMsgs;
 };
 
 int main(int argc, char* argv[])
@@ -86,8 +87,13 @@ int main(int argc, char* argv[])
 
         tcp::resolver resolver(ioService);
         auto host = argv[1];
-        auto port = argv[2];
-        auto endpointIterator = resolver.resolve({ host, port });
+        int port = std::atoi(argv[2]);
+        if (port == 0)
+        {
+            std::cerr << "Incorrect port:" << port << std::endl;
+            return 1;
+        }
+        auto endpointIterator = resolver.resolve({ host, argv[2] });
         Client client(ioService, endpointIterator);
 
         std::thread t([&ioService]()
@@ -95,31 +101,10 @@ int main(int argc, char* argv[])
                 ioService.run();
             });
 
-        client.write("a");
-        client.write("b");
-        client.write("\n");
-        client.write("c");
-        client.write("\n");
-        client.write("d");
-        client.write("\n");
-        client.write("\n");
-        client.write("\n");
-        client.write("f");
-        client.write("\n");
-        client.write("g");
-        client.write("{");
-        client.write("\n");
-        client.write("h");
-        client.write("\n");
-        client.write("i");
-        client.write("\n");
-        client.write("j");
-        client.write("\n");
-        client.write("k");
-        client.write("\n");
-        client.write("\n");
-        client.write("l");
-        client.write("\n");
+        client.write("INSERT A 0 lean\n");
+        client.write("INSERT A 0 understand\n");
+        client.write("INSERT A 1 sweater\n");
+        client.write("INSERT A 2 frank\n");
 
         client.close();
         t.join();

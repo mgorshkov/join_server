@@ -29,13 +29,19 @@ int main(int argc, char* argv[])
     {
         if (argc != 2)
         {
-           std::cerr << "Usage: join_server <port>" << std::endl;
-           return 1;
+            std::cerr << "Usage: join_server <port>" << std::endl;
+            return 1;
         }
 
         boost::asio::io_service ioService;
 
         int port = std::atoi(argv[1]);
+        if (port == 0)
+        {
+            std::cerr << "Incorrect port:" << argv[1] << std::endl;
+            return 1;
+        }
+
         boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), port);
         Server server(ioService, endpoint);
 
