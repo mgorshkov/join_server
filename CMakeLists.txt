@@ -11,18 +11,33 @@ if (DEBUG_PRINT)
 endif()
 
 add_executable(join_server
+	commandhandler.cpp
+	commandhandler.h
 	commandexecutor.cpp
 	commandexecutor.h
 	context.cpp
 	context.h
+	insertcommandhandler.cpp
+	insertcommandhandler.h
+	intersectcommandhandler.cpp
+	intersectcommandhandler.h
 	server.cpp
 	server.h
+	server_main.cpp
 	session.cpp
-	session.h)
+	session.h
+	symdiffcommandhandler.cpp
+	symdiffcommandhandler.h
+	truncatecommandhandler.cpp
+	truncatecommandhandler.h)
 
-add_executable(join_server_test tablestorage_test.cpp)
+add_executable(join_server_test
+	tablestorage_test.cpp)
 
-add_executable(join_client client.cpp)
+add_executable(join_client
+	client.cpp
+	client.h
+	client_main.cpp)
 
 add_library(join_server_lib tablestorage.cpp)
 

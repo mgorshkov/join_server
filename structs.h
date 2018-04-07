@@ -1,6 +1,9 @@
 #pragma once
 
+#include <mutex>
+#include <set>
 #include <string>
+#include <unordered_map>
 
 struct TableRow
 {
@@ -19,9 +22,26 @@ struct TableRow
     }
 };
 
+using TableIndex = std::set<TableRow>;
+
+struct Table
+{
+    size_t mNumber;
+    TableIndex mIndex;
+    std::mutex mMutex;
+
+    Table(size_t aNumber)
+        : mNumber(aNumber)
+    {        
+    }
+};
+
+using Tables = std::unordered_map<std::string, Table>;
+
 enum class OperationStatus
 {
     Ok,
+    UnknownTableName,
     UnknownCommand,
     NoTable,
     TableAlreadyExists,
@@ -34,22 +54,22 @@ inline std::ostream& operator << (std::ostream& stream, OperationStatus os)
     switch (os)
     {
     case OperationStatus::Ok:
-        status = "Ok";
+        status = "OK";
         break;
     case OperationStatus::UnknownCommand:
-        status = "UnknownCommand";
+        status = "ERR unknown command";
         break;
     case OperationStatus::NoTable:
-        status = "NoTable";
+        status = "ERR no table";
         break;
     case OperationStatus::TableAlreadyExists:
-        status = "TableAlreadyExists";
+        status = "ERR table already exists";
         break;
     case OperationStatus::DuplicateRecord:
-        status = "DuplicateRecord";
+        status = "ERR duplicate";
         break;
     default:
-        status = "Unknown";
+        status = "ERR unknown status";
         break;
     }
     return stream << status;
@@ -73,7 +93,8 @@ struct CompleteOperationStatus
     friend std::ostream& operator << (std::ostream& stream, CompleteOperationStatus os)
     {
         stream << os.mStatus;
-        stream << os.mMessage;
+        if (!os.mMessage.empty())
+            stream << os.mMessage;
         return stream;
     }
 };

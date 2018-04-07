@@ -1,7 +1,11 @@
 #pragma once
 
+#include <map>
+#include <memory>
+
 #include "itablemanager.h"
 #include "structs.h"
+#include "commandhandler.h"
 
 class CommandExecutor
 {
@@ -11,17 +15,8 @@ public:
     CompleteOperationStatus RunCommand(const std::string& aLine);
 
 private:
+	void RegisterHandler(Command aCommand, std::shared_ptr<CommandHandler> aCommandHandler);
     CompleteCommand Parse(const std::string& aLine);
 
-    CompleteCommand HandleInsert(const std::string& aLine);
-    CompleteCommand HandleTruncate(const std::string& aLine);
-    CompleteCommand HandleIntersection(const std::string& aLine);
-    CompleteCommand HandleSymmetricDifference(const std::string& aLine);
-
-    ITableManager* mTableManager;
-
-    static constexpr const char* CommandInsert = "INSERT";
-    static constexpr const char* CommandTruncate = "TRUNCATE";
-    static constexpr const char* CommandIntersection = "INTERSECTION";
-    static constexpr const char* CommandSymmetricDifference = "SYMMETRIC_DIFFERENCE";
+    std::map<Command, std::shared_ptr<CommandHandler>> mCommandHandlers;
 };

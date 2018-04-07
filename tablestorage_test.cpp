@@ -8,10 +8,6 @@ BOOST_AUTO_TEST_SUITE(tablestorage_test)
 
 struct Fixture
 {
-    Fixture()
-    {
-    }
-
     TableManager mTableManager;
 };
 
@@ -44,6 +40,23 @@ BOOST_FIXTURE_TEST_CASE(test_insert, Fixture)
     BOOST_CHECK_EQUAL(mTableManager.Dump(), str.str());
 }
 
+BOOST_FIXTURE_TEST_CASE(test_insert_failure, Fixture)
+{
+    CompleteOperationStatus ok{OperationStatus::Ok, ""};
+    CompleteOperationStatus failed{OperationStatus::DuplicateRecord, ""};
+
+    auto result = mTableManager.Insert("A", TableRow{0, "lean"});
+    BOOST_CHECK_EQUAL(result, ok);
+    result = mTableManager.Insert("A", TableRow{0, "understand"});
+    BOOST_CHECK_EQUAL(result, failed);
+
+    std::stringstream str;
+    str << "A:" << std::endl;
+    str << "0,lean" << std::endl;
+    
+    BOOST_CHECK_EQUAL(mTableManager.Dump(), str.str());
+}
+
 BOOST_FIXTURE_TEST_CASE(test_truncate, Fixture)
 {
     mTableManager.Insert("A", TableRow{0, "lean"});
@@ -55,10 +68,16 @@ BOOST_FIXTURE_TEST_CASE(test_truncate, Fixture)
 
     mTableManager.Truncate("A");
 
-    std::stringstream str;
-    str << "A:" << std::endl;
+    mTableManager.Insert("B", TableRow{3, "proposal"});
+    mTableManager.Insert("B", TableRow{4, "example"});
+    mTableManager.Insert("B", TableRow{5, "lake"});
+    mTableManager.Insert("B", TableRow{6, "flour"});
+    mTableManager.Insert("B", TableRow{7, "wonder"});
+    mTableManager.Insert("B", TableRow{8, "selection"});
 
-    BOOST_CHECK_EQUAL(mTableManager.Dump(), str.str());
+    mTableManager.Truncate("B");
+
+    BOOST_CHECK_EQUAL(mTableManager.Dump(), "");
 }
 
 BOOST_FIXTURE_TEST_CASE(test_intersection, Fixture)

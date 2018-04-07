@@ -1,17 +1,17 @@
 #pragma once
 
-#include <set>
-#include <unordered_map>
+#include <iostream>
+#include <string>
+#include <vector>
 
 #include "structs.h"
 #include "itablemanager.h"
 
-using TableIndex = std::set<TableRow>;
-using TableMap = std::unordered_map<std::string, TableIndex>;
-
 class TableManager : public ITableManager
 {
 public:
+	TableManager();
+
     CompleteOperationStatus Insert(const std::string& aTableName, const TableRow& aRow);
     CompleteOperationStatus Truncate(const std::string& aTableName);
 
@@ -32,7 +32,25 @@ private:
         const TableRow& aRow,
         std::ostream& aStr,
         std::size_t aTableNumber);
-    TableMap mTables;
-    static const size_t TableCount = 2;
-    static const char* TableNames[TableCount];
+
+    Tables mTables;
+
+    const std::set<std::string> mTableNames;
+    const std::size_t mTableCount;
+    std::vector<Tables::iterator> mTableIter;
+
+    std::size_t mCurTableNumber;
+
+    class TablesLock
+    {
+    public:
+    	TablesLock(std::vector<Tables::iterator>& aTableIter)
+    	{
+    		for (auto& it : aTableIter)
+    			mGuards.emplace_back(it->second.mMutex);
+    	}
+
+    private:
+    	std::vector<std::unique_lock<std::mutex>> mGuards;
+    };
 };
