@@ -20,6 +20,13 @@ struct TableRow
     {
         return left.mId < right.mId;
     }
+
+    friend std::ostream& operator << (std::ostream& stream, const TableRow& tr)
+    {
+        stream << std::to_string(tr.mId);
+        stream << tr.mName;
+        return stream;
+    }
 };
 
 using TableIndex = std::set<TableRow>;
@@ -94,7 +101,7 @@ struct CompleteOperationStatus
     {
         stream << os.mStatus;
         if (!os.mMessage.empty())
-            stream << os.mMessage;
+            stream << std::string(" ") << os.mMessage;
         return stream;
     }
 };
@@ -108,9 +115,44 @@ enum class Command
     Error,
 };
 
+inline std::ostream& operator << (std::ostream& stream, Command c)
+{
+    std::string status;
+    switch (c)
+    {
+    case Command::Insert:
+        status = "Insert";
+        break;
+    case Command::Truncate:
+        status = "Truncate";
+        break;
+    case Command::Intersection:
+        status = "Intersection";
+        break;
+    case Command::SymmetricDifference:
+        status = "SymmetricDifference";
+        break;
+    case Command::Error:
+        status = "Error";
+        break;
+    default:
+        status = "ERR unknown command";
+        break;
+    }
+    return stream << status;
+}
+
 struct CompleteCommand
 {
     Command mCommand;
     std::string mTableName;
     TableRow mRow;
+
+    friend std::ostream& operator << (std::ostream& stream, CompleteCommand cc)
+    {
+        stream << cc.mCommand;
+        stream << cc.mTableName;
+        stream << cc.mRow;
+        return stream;
+    }
 };

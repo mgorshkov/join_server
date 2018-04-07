@@ -118,9 +118,9 @@ void Context::ProcessStream(std::shared_ptr<CommandExecutor> aCommandExecutor)
     }
     for (const auto& line: text)    
     {
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
         std::cout << "Context::ProcessStream 6, line=" << line << ";" << std::endl;
-//#endif
+#endif
         auto res = aCommandExecutor->RunCommand(line);
 //#ifdef DEBUG_PRINT
         std::cout << "Context::ProcessStream 7, res=" << res << std::endl;

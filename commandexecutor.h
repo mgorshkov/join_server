@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <memory>
 
 #include "itablemanager.h"
@@ -15,8 +15,8 @@ public:
     CompleteOperationStatus RunCommand(const std::string& aLine);
 
 private:
-	void RegisterHandler(Command aCommand, std::shared_ptr<CommandHandler> aCommandHandler);
+    void RegisterHandler(Command aCommand, std::unique_ptr<CommandHandler> aCommandHandler);
     CompleteCommand Parse(const std::string& aLine);
 
-    std::map<Command, std::shared_ptr<CommandHandler>> mCommandHandlers;
+    std::unordered_map<Command, std::unique_ptr<CommandHandler>> mCommandHandlers;
 };

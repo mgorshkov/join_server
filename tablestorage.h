@@ -10,7 +10,7 @@
 class TableManager : public ITableManager
 {
 public:
-	TableManager();
+    TableManager();
 
     CompleteOperationStatus Insert(const std::string& aTableName, const TableRow& aRow);
     CompleteOperationStatus Truncate(const std::string& aTableName);
@@ -46,8 +46,8 @@ private:
     public:
     	TablesLock(std::vector<Tables::iterator>& aTableIter)
     	{
-    		for (auto& it : aTableIter)
-    			mGuards.emplace_back(it->second.mMutex);
+            for (auto& it : aTableIter)
+                mGuards.emplace_back(it->second.mMutex);
     	}
 
     private:

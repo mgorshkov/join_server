@@ -6,9 +6,9 @@
 class InsertCommandHandler : public CommandHandler
 {
 public:
-	InsertCommandHandler(ITableManager* aTableManager);
+    InsertCommandHandler(ITableManager* aTableManager);
 
-	virtual std::string GetCommand() const override;
-	virtual CompleteCommand Parse(const std::string& aLine) override;
-	virtual CompleteOperationStatus Handle(const CompleteCommand& aCommand) override;
+    virtual std::string GetCommand() const override;
+    virtual CompleteCommand Parse(const std::string& aLine) override;
+    virtual CompleteOperationStatus Handle(const CompleteCommand& aCommand) override;
 };

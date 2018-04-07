@@ -43,7 +43,7 @@ BOOST_FIXTURE_TEST_CASE(test_insert, Fixture)
 BOOST_FIXTURE_TEST_CASE(test_insert_failure, Fixture)
 {
     CompleteOperationStatus ok{OperationStatus::Ok, ""};
-    CompleteOperationStatus failed{OperationStatus::DuplicateRecord, ""};
+    CompleteOperationStatus failed{OperationStatus::DuplicateRecord, "0"};
 
     auto result = mTableManager.Insert("A", TableRow{0, "lean"});
     BOOST_CHECK_EQUAL(result, ok);
