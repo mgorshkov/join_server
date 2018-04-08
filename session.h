@@ -19,6 +19,7 @@ private:
     void Stop();
 
     void DoRead();
+    void DoWrite();
     void Deliver(std::size_t length);
 
     std::shared_ptr<CommandExecutor> mCommandExecutor;
@@ -26,4 +27,5 @@ private:
     boost::asio::ip::tcp::socket mSocket;
     static const std::size_t BufSize = 256;
     std::array<char, BufSize> mReadMsg;
+    std::deque<std::string> mWriteMsgs;
 };

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+#include <list>
 #include <mutex>
 #include <set>
 #include <string>
@@ -84,27 +86,33 @@ inline std::ostream& operator << (std::ostream& stream, OperationStatus os)
 
 struct CompleteOperationStatus
 {
-    CompleteOperationStatus(OperationStatus aStatus = OperationStatus::Ok, const std::string& aMessage = "")
+    CompleteOperationStatus(OperationStatus aStatus = OperationStatus::Ok, const std::string& aMessage = "", const std::string& aDump = "")
         : mStatus(aStatus)
         , mMessage(aMessage)
+        , mDump(aDump)
     {
     }
     OperationStatus mStatus;
     std::string mMessage;
+    std::string mDump;
 
     friend bool operator == (const CompleteOperationStatus& left, const CompleteOperationStatus& right)
     {
-        return left.mStatus == right.mStatus && left.mMessage == right.mMessage;
+        return left.mStatus == right.mStatus && left.mMessage == right.mMessage && left.mDump == right.mDump;
     }
 
     friend std::ostream& operator << (std::ostream& stream, CompleteOperationStatus os)
     {
+        if (!os.mDump.empty())
+            stream << os.mDump << std::endl;
         stream << os.mStatus;
         if (!os.mMessage.empty())
             stream << std::string(" ") << os.mMessage;
         return stream;
     }
 };
+
+using CompleteOperationStatuses = std::list<CompleteOperationStatus>;
 
 enum class Command
 {

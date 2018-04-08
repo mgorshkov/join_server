@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <iostream>
 #include <sstream>
 
 #include "tablestorage.h"
@@ -106,7 +107,7 @@ CompleteOperationStatus TableManager::Intersection()
     for (const auto& p : mTableIter[maxSizeIndex]->second.mIndex)
         FindAndPrintIfFound(mTableIter[mTableCount - maxSizeIndex - 1]->second.mIndex, p, str, maxSizeIndex);
 
-    return CompleteOperationStatus{OperationStatus::Ok, str.str()};
+    return CompleteOperationStatus{OperationStatus::Ok, "", str.str()};
 }
 
 CompleteOperationStatus TableManager::SymmetricDifference()
@@ -120,7 +121,7 @@ CompleteOperationStatus TableManager::SymmetricDifference()
         for (const auto& p : mTableIter[i]->second.mIndex)
             FindAndPrintIfNotFound(mTableIter[mTableCount - i - 1]->second.mIndex, p, str, i);
     }
-    return CompleteOperationStatus{OperationStatus::Ok, str.str()};
+    return CompleteOperationStatus{OperationStatus::Ok, "", str.str()};
 }
 
 std::string TableManager::Dump()
@@ -132,7 +133,7 @@ std::string TableManager::Dump()
     for (const auto& table : mTables)
     {
     	if (table.second.mIndex.empty())
-    		continue;
+            continue;
         str << table.first << ":" << std::endl;
         for (const auto& p : table.second.mIndex)
             str << p.mId << "," << p.mName << std::endl;

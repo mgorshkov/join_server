@@ -1,5 +1,4 @@
 #include <iostream>
-#include <list>
 
 #include "context.h"
 
@@ -83,7 +82,7 @@ void Context::Stop()
 #endif
 }
 
-void Context::ProcessStream(std::shared_ptr<CommandExecutor> aCommandExecutor)
+CompleteOperationStatuses Context::ProcessStream(std::shared_ptr<CommandExecutor> aCommandExecutor)
 {
     std::list<std::string> text;
     {
@@ -117,16 +116,19 @@ void Context::ProcessStream(std::shared_ptr<CommandExecutor> aCommandExecutor)
         std::cout << "Context::ProcessStream 5, pos = " << mStream.tellp() << ", line = " << line << std::endl;
 #endif
     }
+    CompleteOperationStatuses results;
     for (const auto& line: text)    
     {
 #ifdef DEBUG_PRINT
         std::cout << "Context::ProcessStream 6, line=" << line << ";" << std::endl;
 #endif
-        auto res = aCommandExecutor->RunCommand(line);
+        auto result = aCommandExecutor->RunCommand(line);
+        results.push_back(result);
 //#ifdef DEBUG_PRINT
-        std::cout << "Context::ProcessStream 7, res=" << res << std::endl;
+        std::cout << "Context::ProcessStream 7, result=" << result << std::endl;
 //#endif
     }
+    return results;
 }
 
 void Context::ThreadProc(Context* aContext, std::shared_ptr<CommandExecutor> aCommandExecutor)
@@ -148,13 +150,19 @@ void Context::ThreadProc(Context* aContext, std::shared_ptr<CommandExecutor> aCo
             std::cout << "Context::ThreadProc01, this==" << aContext << std::endl;
 #endif
             lk.unlock();
-            aContext->ProcessStream(aCommandExecutor);
+            {
+                std::unique_lock<std::mutex> lk(aContext->mQueueMutex);
+                aContext->mOutboundStatuses.push(aContext->ProcessStream(aCommandExecutor));
+            }
             aContext->mNotified = false;
         }
 #ifdef DEBUG_PRINT
         std::cout << "Context::ThreadProc1, this==" << aContext << std::endl;
 #endif
-        aContext->ProcessStream(aCommandExecutor);
+        {
+            std::unique_lock<std::mutex> lk(aContext->mQueueMutex);
+            aContext->mOutboundStatuses.push(aContext->ProcessStream(aCommandExecutor));
+        }
 #ifdef DEBUG_PRINT
         std::cout << "Context::ThreadProc2, this==" << aContext << std::endl;
 #endif

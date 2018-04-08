@@ -28,6 +28,7 @@ void Session::Start()
 
 void Session::Stop()
 {
+    mSocket.close();
     mContext.Stop();
 }
 
@@ -45,12 +46,33 @@ void Session::DoRead()
             Deliver(length);
 
             if (!ec)
+            {
                 DoRead();
+                DoWrite();
+            }
             else
                 Stop();
         });
 }
   
+void Session::DoWrite()
+{
+    boost::asio::async_write(mSocket,
+        boost::asio::buffer(mWriteMsgs.front().c_str(),
+            mWriteMsgs.front().size()),
+    [this](boost::system::error_code ec, std::size_t /*length*/)
+        {
+            if (!ec)
+            {
+                mWriteMsgs.pop_front();
+                if (!mWriteMsgs.empty())
+                    DoWrite();
+            }
+            else
+                Stop();
+        });
+}
+
 void Session::Deliver(std::size_t length)
 {
 #ifdef DEBUG_PRINT
@@ -58,4 +80,18 @@ void Session::Deliver(std::size_t length)
 #endif
 
     mContext.ProcessData(mReadMsg.data(), length);
+}
+
+void Client::Write(const std::string& aMsg)
+{
+    mIoService.post(
+        [this, aMsg]()
+        {
+            bool writeInProgress = !mWriteMsgs.empty();
+            mWriteMsgs.push_back(aMsg);
+            if (!writeInProgress)
+            {
+                DoWrite();
+            }
+        });
 }

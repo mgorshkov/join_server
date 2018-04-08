@@ -1,13 +1,16 @@
 #pragma once
 
+#include <list>
 #include <memory>
 #include <mutex>
 #include <thread>
 #include <sstream>
 #include <condition_variable>
 #include <atomic>
+#include <queue>
 
 #include "commandexecutor.h"
+#include "structs.h"
 
 class Context
 {
@@ -23,7 +26,7 @@ public:
     void Stop();
 
 private:
-    void ProcessStream(std::shared_ptr<CommandExecutor> aCommandExecutor);
+    CompleteOperationStatuses ProcessStream(std::shared_ptr<CommandExecutor> aCommandExecutor);
 
     static void ThreadProc(Context* aContext, std::shared_ptr<CommandExecutor> aCommandExecutor);
 
@@ -36,4 +39,7 @@ private:
     std::atomic_bool mNotified{false};
 
     std::thread mThread;
+
+    std::queue<CompleteOperationStatuses> mOutboundStatuses;
+    std::mutex mQueueMutex;
 };
