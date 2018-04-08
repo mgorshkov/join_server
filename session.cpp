@@ -44,15 +44,29 @@ void Session::DoRead()
             std::cout << "Session::DoRead, this==" << this << ", ec=" << ec << ", mReadMsg=" << &mReadMsg[0] << ", length=" << length << std::endl;
 #endif
             Deliver(length);
-
-            if (!ec)
-            {
-                DoRead();
+            GetWriteQueue();
+            if (!mWriteMsgs.empty())
                 DoWrite();
-            }
+    
+            if (!ec)
+                DoRead();
             else
                 Stop();
         });
+}
+
+void Session::GetWriteQueue()
+{
+    auto statuses = mContext.GetOutboundQueue();
+    if (statuses.empty())
+        return;
+    std::stringstream str;
+    for (const auto& status : statuses)
+        str << status;
+//#ifdef DEBUG_PRINT
+    std::cout << "Session::GetWriteQueue, this==" << this << ", str=" << str.str() << std::endl;
+//#endif
+    mWriteMsgs.push_back(str.str());
 }
   
 void Session::DoWrite()
@@ -61,16 +75,22 @@ void Session::DoWrite()
         boost::asio::buffer(mWriteMsgs.front().c_str(),
             mWriteMsgs.front().size()),
     [this](boost::system::error_code ec, std::size_t /*length*/)
-        {
-            if (!ec)
-            {
-                mWriteMsgs.pop_front();
-                if (!mWriteMsgs.empty())
-                    DoWrite();
-            }
-            else
-                Stop();
-        });
+       {
+ //#ifdef DEBUG_PRINT
+           std::cout << "Session::DoWrite, this==" << this << ", ec=" << ec << std::endl;
+//#endif
+           if (!ec)
+           {
+               mWriteMsgs.pop_front();
+ //#ifdef DEBUG_PRINT
+           std::cout << "Session::DoWrite 2, this==" << this << ", ec=" << ec << std::endl;
+//#endif
+               if (!mWriteMsgs.empty())
+                   DoWrite();
+           }
+           else
+               Stop();
+       });
 }
 
 void Session::Deliver(std::size_t length)
@@ -80,18 +100,12 @@ void Session::Deliver(std::size_t length)
 #endif
 
     mContext.ProcessData(mReadMsg.data(), length);
-}
 
-void Client::Write(const std::string& aMsg)
-{
-    mIoService.post(
-        [this, aMsg]()
-        {
-            bool writeInProgress = !mWriteMsgs.empty();
-            mWriteMsgs.push_back(aMsg);
-            if (!writeInProgress)
-            {
-                DoWrite();
-            }
-        });
+    std::string aMsg = "test";
+    boost::asio::write(mSocket, boost::asio::buffer(aMsg.c_str(), aMsg.length()));
+
+    std::cout << "Session::Deliver write, this==" << this << ", mReadMsg.data()=" << mReadMsg.data() << ", mReadMsg.size()=" << mReadMsg.size() << std::endl;
+
+    mWriteMsgs.push_back("test");
+//DoWrite();
 }

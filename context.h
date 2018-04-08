@@ -25,6 +25,8 @@ public:
     void Start();
     void Stop();
 
+    CompleteOperationStatuses GetOutboundQueue();
+
 private:
     CompleteOperationStatuses ProcessStream(std::shared_ptr<CommandExecutor> aCommandExecutor);
 

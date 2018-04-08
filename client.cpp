@@ -4,67 +4,41 @@
 
 using boost::asio::ip::tcp;
 
-Client::Client(boost::asio::io_service& aIoService, tcp::resolver::iterator aEndpointIterator)
+Client::Client(boost::asio::io_service& aIoService, tcp::endpoint aEndPoint)
     : mIoService(aIoService)
     , mSocket(aIoService)
 {
-    DoConnect(aEndpointIterator);
+    DoConnect(aEndPoint);
 }
 
-void Client::DoJob()
+void Client::Run()
 {
-    Write("0\n");
     Write("INSERT A 0 lean\n");
     Write("INSERT A 0 understand\n");
     Write("INSERT A 1 sweater\n");
     Write("INSERT A 2 frank\n");
+    Write("INSERT B 0 flour\n");
+    Write("INSERT B 2 wonder\n");
+    Write("INSERT B 2 selection\n");
+    Write("INTERSECTION\n");
+    Read();
+    mSocket.close();
 }
 
 void Client::Write(const std::string& aMsg)
 {
-    mIoService.post(
-        [this, aMsg]()
-        {
-            bool writeInProgress = !mWriteMsgs.empty();
-            mWriteMsgs.push_back(aMsg);
-            if (!writeInProgress)
-            {
-                DoWrite();
-            }
-        });
+    boost::asio::write(mSocket, boost::asio::buffer(aMsg.c_str(), aMsg.length()));
 }
 
-void Client::Close()
+void Client::DoConnect(tcp::endpoint aEndPoint)
 {
-    mIoService.post([this]() { mSocket.close(); });
+    mSocket.connect(aEndPoint);
 }
 
-void Client::DoConnect(tcp::resolver::iterator aEndpointIterator)
+void Client::Read()
 {
-    boost::asio::async_connect(mSocket, aEndpointIterator,
-        [this](boost::system::error_code ec, tcp::resolver::iterator)
-        {
-            if (ec)
-                std::cout << "Connect error: " << ec.message() << std::endl;
-            if (!ec)
-                DoWrite();
-        });
-}
-
-void Client::DoWrite()
-{
-    boost::asio::async_write(mSocket,
-        boost::asio::buffer(mWriteMsgs.front().c_str(),
-            mWriteMsgs.front().size()),
-    [this](boost::system::error_code ec, std::size_t /*length*/)
-        {
-            if (!ec)
-            {
-                mWriteMsgs.pop_front();
-                if (!mWriteMsgs.empty())
-                    DoWrite();
-            }
-            else
-                mSocket.close();
-        });
+    char data[256];
+    std::cout << "Client::Read" << std::endl;
+    size_t len = mSocket.read_some(boost::asio::buffer(data));
+    std::cout << "receive " << len << "=" << std::string{data, len} << std::endl;
 }

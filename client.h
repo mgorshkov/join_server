@@ -10,22 +10,17 @@ using boost::asio::ip::tcp;
 class Client
 {
 public:
-    Client(boost::asio::io_service& aIoService, tcp::resolver::iterator aEndpointIterator);
+    Client(boost::asio::io_service& aIoService, tcp::endpoint aEndPoint);
 
-    void DoJob();
-
-    void Close();
+    void Run();
 
 private:
+    void DoConnect(tcp::endpoint aEndPoint);
     void Write(const std::string& aMsg);
-
-    void DoConnect(tcp::resolver::iterator aEndpointIterator);
-
-    void DoWrite();
+    void Read();
 
 private:
     boost::asio::io_service& mIoService;
     tcp::socket mSocket;
-    std::deque<std::string> mWriteMsgs;
 };
 

@@ -55,38 +55,40 @@ CompleteOperationStatus TableManager::Truncate(const std::string& aTableName)
     return CompleteOperationStatus{};
 }
 
-void TableManager::FindAndPrintIfFound(
+std::string TableManager::FindAndPrintIfFound(
     const TableIndex& aIndex,
     const TableRow& aRow,
-    std::ostream& aStr,
     std::size_t aTableNumber)
 {
+    std::stringstream str;
     auto it = aIndex.find(TableRow{aRow.mId});
     if (it != aIndex.end())
-        aStr
+        str
             << aRow.mId
             << ","
             << (aTableNumber == 0 ? aRow.mName : it->mName)
             << ","
             << (aTableNumber == 0 ? it->mName : aRow.mName)
             << std::endl;
+    return str.str();
 }
 
-void TableManager::FindAndPrintIfNotFound(
+std::string TableManager::FindAndPrintIfNotFound(
     const TableIndex& aIndex,
     const TableRow& aRow,
-    std::ostream& aStr,
     std::size_t aTableNumber)
 {
+    std::stringstream str;
     auto it = aIndex.find(TableRow{aRow.mId});
     if (it == aIndex.end())
-        aStr
+        str
             << aRow.mId
             << ","
             << (aTableNumber == 0 ? "" : ",")
             << aRow.mName
             << (aTableNumber != 0 ? "" : ",")
             << std::endl;
+    return str.str();
 }
 
 CompleteOperationStatus TableManager::Intersection()
@@ -102,26 +104,30 @@ CompleteOperationStatus TableManager::Intersection()
             maxSizeIndex = i;
     }
 
-    std::stringstream str;
+    std::string str;
 
     for (const auto& p : mTableIter[maxSizeIndex]->second.mIndex)
-        FindAndPrintIfFound(mTableIter[mTableCount - maxSizeIndex - 1]->second.mIndex, p, str, maxSizeIndex);
+        str += FindAndPrintIfFound(mTableIter[mTableCount - maxSizeIndex - 1]->second.mIndex, p, maxSizeIndex);
 
-    return CompleteOperationStatus{OperationStatus::Ok, "", str.str()};
+//#ifdef DEBUG_PRINT
+    std::cout << "TableManager::Intersection, this==" << this << ", str=" << str << std::endl;
+//#endif
+
+    return CompleteOperationStatus{OperationStatus::Ok, "", str};
 }
 
 CompleteOperationStatus TableManager::SymmetricDifference()
 {
-    std::stringstream str;
+    std::string str;
 
     TablesLock lock(mTableIter);
 
     for (std::size_t i = 0; i < mTableCount; ++i)
     {
         for (const auto& p : mTableIter[i]->second.mIndex)
-            FindAndPrintIfNotFound(mTableIter[mTableCount - i - 1]->second.mIndex, p, str, i);
+            str += FindAndPrintIfNotFound(mTableIter[mTableCount - i - 1]->second.mIndex, p, i);
     }
-    return CompleteOperationStatus{OperationStatus::Ok, "", str.str()};
+    return CompleteOperationStatus{OperationStatus::Ok, "", str};
 }
 
 std::string TableManager::Dump()

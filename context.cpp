@@ -82,6 +82,16 @@ void Context::Stop()
 #endif
 }
 
+CompleteOperationStatuses Context::GetOutboundQueue()
+{
+    std::unique_lock<std::mutex> lock(mQueueMutex);
+    if (mOutboundStatuses.empty())
+        return CompleteOperationStatuses{};
+    auto statuses = mOutboundStatuses.front();
+    mOutboundStatuses.pop();
+    return statuses;
+}
+
 CompleteOperationStatuses Context::ProcessStream(std::shared_ptr<CommandExecutor> aCommandExecutor)
 {
     std::list<std::string> text;

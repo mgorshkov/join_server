@@ -42,22 +42,18 @@ CompleteCommand CommandExecutor::Parse(const std::string& aLine)
 {
     std::cout << "CommandExecutor::Parse, aLine=" << aLine << ";" << std::endl;
 
-    int size = mCommandHandlers.size();
-
-    std::cout << "CommandExecutor::Parse, aLine=" << aLine << ";" << size << std::endl;
-
     for (const auto& handler: mCommandHandlers)
     {
         auto commandName = handler.second->GetCommand();
         auto pos = aLine.find(commandName);
-//#ifdef DEBUG_PRINT
-        std::cout << "CommandExecutor::Parse, pos=" << pos << ";" << std::endl;
-//#endif
         if (pos != std::string::npos)
         {
             std::string commandBody;
             if (aLine.length() > commandName.length())
                 commandBody = aLine.substr(commandName.length() + 1, aLine.length() - commandName.length());       
+//#ifdef DEBUG_PRINT
+            std::cout << "CommandExecutor::Parse, commandBody=" << commandBody << ";" << std::endl;
+//#endif
             return handler.second->Parse(commandBody);
         }
     }   

@@ -22,15 +22,13 @@ public:
 
 private:
     CompleteOperationStatus Create(const std::string& aTableName);
-    void FindAndPrintIfFound(
+    std::string FindAndPrintIfFound(
         const TableIndex& aIndex,
         const TableRow& aRow,
-        std::ostream& aStr,
         std::size_t aTableNumber);
-    void FindAndPrintIfNotFound(
+    std::string FindAndPrintIfNotFound(
         const TableIndex& aIndex,
         const TableRow& aRow,
-        std::ostream& aStr,
         std::size_t aTableNumber);
 
     Tables mTables;

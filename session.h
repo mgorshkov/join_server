@@ -19,6 +19,7 @@ private:
     void Stop();
 
     void DoRead();
+    void GetWriteQueue();
     void DoWrite();
     void Deliver(std::size_t length);
 

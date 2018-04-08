@@ -14,7 +14,6 @@ int main(int argc, char* argv[])
 
         boost::asio::io_service ioService;
 
-        tcp::resolver resolver(ioService);
         auto host = argv[1];
         int port = std::atoi(argv[2]);
         if (port == 0)
@@ -22,20 +21,10 @@ int main(int argc, char* argv[])
             std::cerr << "Incorrect port:" << port << std::endl;
             return 1;
         }
-        auto endpointIterator = resolver.resolve({ host, argv[2] });
 
-        Client client(ioService, endpointIterator);
-        std::thread t([&ioService]()
-            {
-                ioService.run();
-            });
-
-        client.DoJob();
-        client.Close();
-
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-        
-        t.join();
+        boost::asio::ip::tcp::endpoint endPoint(boost::asio::ip::address::from_string(host), port);
+        Client client(ioService, endPoint);
+        client.Run();
     }
     catch (std::exception& e)
     {

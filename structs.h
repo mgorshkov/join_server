@@ -25,9 +25,7 @@ struct TableRow
 
     friend std::ostream& operator << (std::ostream& stream, const TableRow& tr)
     {
-        stream << std::to_string(tr.mId);
-        stream << tr.mName;
-        return stream;
+        return stream << std::string("Id: ") << std::to_string(tr.mId) << std::string(", Name: ") << tr.mName;
     }
 };
 
@@ -104,7 +102,7 @@ struct CompleteOperationStatus
     friend std::ostream& operator << (std::ostream& stream, CompleteOperationStatus os)
     {
         if (!os.mDump.empty())
-            stream << os.mDump << std::endl;
+            stream << os.mDump;
         stream << os.mStatus;
         if (!os.mMessage.empty())
             stream << std::string(" ") << os.mMessage;
