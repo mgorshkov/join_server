@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "truncatecommandhandler.h"
 
 TruncateCommandHandler::TruncateCommandHandler(ITableManager* aTableManager)
@@ -12,12 +14,13 @@ std::string TruncateCommandHandler::GetCommand() const
 
 CompleteCommand TruncateCommandHandler::Parse(const std::string& aLine)
 {
-    auto pos = aLine.find(' ');
-    if (pos == std::string::npos)
-        return CompleteCommand{Command::Error};
+    std::string tableName = aLine;
 
-    int id = std::atoi(aLine.substr(0, pos).c_str());
-    return CompleteCommand{Command::Insert};
+//#ifdef DEBUG_PRINT
+    std::cout << "TruncateCommandHandler::Parse, tableName=" << tableName << std::endl;
+//#endif
+
+    return CompleteCommand{Command::Truncate, tableName};
 }
 
 CompleteOperationStatus TruncateCommandHandler::Handle(const CompleteCommand& aCommand)

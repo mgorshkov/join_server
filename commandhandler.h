@@ -1,6 +1,7 @@
 #pragma once
 
 #include "itablemanager.h"
+#include "structs.h"
 
 class CommandHandler
 {

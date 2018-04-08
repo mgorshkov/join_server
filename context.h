@@ -12,7 +12,7 @@
 class Context
 {
 public:
-    Context();
+    Context(std::shared_ptr<CommandExecutor> aCommandExecutor = nullptr);
     ~Context();
 
     void SetExecutor(std::shared_ptr<CommandExecutor> aCommandExecutor);

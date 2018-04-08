@@ -4,8 +4,8 @@
 Server::Server(boost::asio::io_service& aIoService, const boost::asio::ip::tcp::endpoint& aEndPoint)
     : mAcceptor(aIoService, aEndPoint)
     , mSocket(aIoService)
-    , mCommandExecutor(&mTableManager)
 {
+    mCommandExecutor = std::make_shared<CommandExecutor>(&mTableManager);
     DoAccept();
 }
 

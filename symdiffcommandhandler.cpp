@@ -10,14 +10,9 @@ std::string SymmetricDifferenceCommandHandler::GetCommand() const
     return "SYMMETRIC_DIFFERENCE";
 }
 
-CompleteCommand SymmetricDifferenceCommandHandler::Parse(const std::string& aLine)
+CompleteCommand SymmetricDifferenceCommandHandler::Parse(const std::string&)
 {
-    auto pos = aLine.find(' ');
-    if (pos == std::string::npos)
-        return CompleteCommand{Command::Error};
-
-    int id = std::atoi(aLine.substr(0, pos).c_str());
-    return CompleteCommand{Command::Insert};
+    return CompleteCommand{Command::SymmetricDifference};
 }
 
 CompleteOperationStatus SymmetricDifferenceCommandHandler::Handle(const CompleteCommand&)

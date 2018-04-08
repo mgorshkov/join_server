@@ -150,8 +150,11 @@ struct CompleteCommand
 
     friend std::ostream& operator << (std::ostream& stream, CompleteCommand cc)
     {
+        stream << std::string("command: ");
         stream << cc.mCommand;
+        stream << std::string(", table: ");
         stream << cc.mTableName;
+        stream << std::string(", row: ");
         stream << cc.mRow;
         return stream;
     }

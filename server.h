@@ -1,6 +1,7 @@
 #pragma once
 
 #include <boost/asio.hpp>
+#include <memory>
 
 #include "tablestorage.h"
 #include "commandexecutor.h"
@@ -17,5 +18,5 @@ private:
     boost::asio::ip::tcp::socket mSocket;
 
     TableManager mTableManager;
-    CommandExecutor mCommandExecutor;
+    std::shared_ptr<CommandExecutor> mCommandExecutor;
 };

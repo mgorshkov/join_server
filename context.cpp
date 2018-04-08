@@ -3,7 +3,8 @@
 
 #include "context.h"
 
-Context::Context()
+Context::Context(std::shared_ptr<CommandExecutor> aCommandExecutor)
+    : mCommandExecutor(aCommandExecutor)
 {
 #ifdef DEBUG_PRINT
     std::cout << "Context::Context, this==" << this << std::endl;

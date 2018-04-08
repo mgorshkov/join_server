@@ -24,6 +24,11 @@ CompleteOperationStatus CommandExecutor::RunCommand(const std::string& aLine)
 //#ifdef DEBUG_PRINT
     std::cout << "CommandExecutor::RunCommand, command=" << command << ";" << std::endl;
 //#endif
+    if (command.mCommand == Command::Error)
+    {
+        return CompleteOperationStatus{OperationStatus::UnknownCommand};
+    }
+    assert (mCommandHandlers.find(command.mCommand) != mCommandHandlers.end());
     return mCommandHandlers[command.mCommand]->Handle(command);
 }
 
@@ -43,13 +48,19 @@ CompleteCommand CommandExecutor::Parse(const std::string& aLine)
 
     for (const auto& handler: mCommandHandlers)
     {
-        auto pos = aLine.find(handler.second->GetCommand());
+        auto commandName = handler.second->GetCommand();
+        auto pos = aLine.find(commandName);
 //#ifdef DEBUG_PRINT
         std::cout << "CommandExecutor::Parse, pos=" << pos << ";" << std::endl;
 //#endif
         if (pos != std::string::npos)
-            return handler.second->Parse(aLine);
+        {
+            std::string commandBody;
+            if (aLine.length() > commandName.length())
+                commandBody = aLine.substr(commandName.length() + 1, aLine.length() - commandName.length());       
+            return handler.second->Parse(commandBody);
+        }
     }   
-    
+  
     return CompleteCommand{Command::Error};
 }

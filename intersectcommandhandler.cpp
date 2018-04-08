@@ -10,14 +10,9 @@ std::string IntersectionCommandHandler::GetCommand() const
     return "INTERSECTION";
 }
 
-CompleteCommand IntersectionCommandHandler::Parse(const std::string& aLine)
+CompleteCommand IntersectionCommandHandler::Parse(const std::string&)
 {
-    auto pos = aLine.find(' ');
-    if (pos == std::string::npos)
-        return CompleteCommand{Command::Error};
-
-    int id = std::atoi(aLine.substr(0, pos).c_str());
-    return CompleteCommand{Command::Insert};
+    return CompleteCommand{Command::Intersection};
 }
 
 CompleteOperationStatus IntersectionCommandHandler::Handle(const CompleteCommand&)

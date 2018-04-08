@@ -4,9 +4,9 @@
 
 using boost::asio::ip::tcp;
 
-Session::Session(tcp::socket aSocket, CommandExecutor& aCommandExecutor)
+Session::Session(tcp::socket aSocket, std::shared_ptr<CommandExecutor> aCommandExecutor)
     : mSocket(std::move(aSocket))
-    , mCommandExecutor(aCommandExecutor)
+    , mContext(aCommandExecutor)
 {
 #ifdef DEBUG_PRINT
     std::cout << "Session::Session, this==" << this << std::endl;

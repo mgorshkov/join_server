@@ -13,6 +13,7 @@ Client::Client(boost::asio::io_service& aIoService, tcp::resolver::iterator aEnd
 
 void Client::DoJob()
 {
+    Write("0\n");
     Write("INSERT A 0 lean\n");
     Write("INSERT A 0 understand\n");
     Write("INSERT A 1 sweater\n");

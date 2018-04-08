@@ -4,13 +4,13 @@
 #include "tablestorage.h"
 
 TableManager::TableManager()
-	: mTableNames{"A", "B"}
-	, mTableCount(mTableNames.size())
-	, mTableIter(mTableNames.size())
-	, mCurTableNumber(0)
+    : mTableNames{"A", "B"}
+    , mTableCount(mTableNames.size())
+    , mTableIter(mTableNames.size())
+    , mCurTableNumber(0)
 {
-	for (const auto& tableName : mTableNames)
-		Create(tableName);
+    for (const auto& tableName : mTableNames)
+        Create(tableName);
 }
 
 CompleteOperationStatus TableManager::Create(const std::string& aTableName)
