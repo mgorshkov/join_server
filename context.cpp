@@ -134,9 +134,9 @@ CompleteOperationStatuses Context::ProcessStream(std::shared_ptr<CommandExecutor
 #endif
         auto result = aCommandExecutor->RunCommand(line);
         results.push_back(result);
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
         std::cout << "Context::ProcessStream 7, result=" << result << std::endl;
-//#endif
+#endif
     }
     return results;
 }

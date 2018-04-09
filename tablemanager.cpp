@@ -2,7 +2,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "tablestorage.h"
+#include "tablemanager.h"
 
 TableManager::TableManager()
     : mTableNames{"A", "B"}
@@ -108,11 +108,9 @@ CompleteOperationStatus TableManager::Intersection()
 
     for (const auto& p : mTableIter[maxSizeIndex]->second.mIndex)
         str += FindAndPrintIfFound(mTableIter[mTableCount - maxSizeIndex - 1]->second.mIndex, p, maxSizeIndex);
-
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
     std::cout << "TableManager::Intersection, this==" << this << ", str=" << str << std::endl;
-//#endif
-
+#endif
     return CompleteOperationStatus{OperationStatus::Ok, "", str};
 }
 

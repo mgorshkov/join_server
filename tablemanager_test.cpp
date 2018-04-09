@@ -1,10 +1,10 @@
-#define BOOST_TEST_MODULE tablestorage_test
+#define BOOST_TEST_MODULE tablemanager_test
 
 #include <boost/test/unit_test.hpp>
 
-#include "tablestorage.h"
+#include "tablemanager.h"
 
-BOOST_AUTO_TEST_SUITE(tablestorage_test)
+BOOST_AUTO_TEST_SUITE(tablemanager_test)
 
 struct Fixture
 {

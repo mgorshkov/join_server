@@ -32,14 +32,15 @@ add_executable(join_server
 	truncatecommandhandler.h)
 
 add_executable(join_server_test
-	tablestorage_test.cpp)
+	tablemanager_test.cpp)
 
 add_executable(join_client
 	client.cpp
 	client.h
 	client_main.cpp)
 
-add_library(join_server_lib tablestorage.cpp)
+add_library(join_server_lib
+	tablemanager.cpp)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 set(Boost_USE_STATIC_LIBS ON)

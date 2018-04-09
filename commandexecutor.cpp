@@ -17,13 +17,13 @@ CommandExecutor::CommandExecutor(ITableManager* aTableManager)
 
 CompleteOperationStatus CommandExecutor::RunCommand(const std::string& aLine)
 {
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
     std::cout << "CommandExecutor::RunCommand, line=" << aLine << ";" << std::endl;
-//#endif
+#endif
     CompleteCommand command = Parse(aLine);
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
     std::cout << "CommandExecutor::RunCommand, command=" << command << ";" << std::endl;
-//#endif
+#endif
     if (command.mCommand == Command::Error)
     {
         return CompleteOperationStatus{OperationStatus::UnknownCommand};
@@ -40,7 +40,9 @@ void CommandExecutor::RegisterHandler(Command aCommand, std::unique_ptr<CommandH
 
 CompleteCommand CommandExecutor::Parse(const std::string& aLine)
 {
+#ifdef DEBUG_PRINT
     std::cout << "CommandExecutor::Parse, aLine=" << aLine << ";" << std::endl;
+#endif
 
     for (const auto& handler: mCommandHandlers)
     {
@@ -51,9 +53,9 @@ CompleteCommand CommandExecutor::Parse(const std::string& aLine)
             std::string commandBody;
             if (aLine.length() > commandName.length())
                 commandBody = aLine.substr(commandName.length() + 1, aLine.length() - commandName.length());       
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
             std::cout << "CommandExecutor::Parse, commandBody=" << commandBody << ";" << std::endl;
-//#endif
+#endif
             return handler.second->Parse(commandBody);
         }
     }   

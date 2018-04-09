@@ -106,6 +106,7 @@ struct CompleteOperationStatus
         stream << os.mStatus;
         if (!os.mMessage.empty())
             stream << std::string(" ") << os.mMessage;
+        stream << std::endl;
         return stream;
     }
 };

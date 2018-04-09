@@ -3,7 +3,7 @@
 #include <boost/asio.hpp>
 #include <memory>
 
-#include "tablestorage.h"
+#include "tablemanager.h"
 #include "commandexecutor.h"
 
 class Server
