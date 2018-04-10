@@ -43,6 +43,10 @@ add_library(join_server_lib
 	tablemanager.cpp)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
+set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME ON)
+
 find_package(Threads REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system filesystem unit_test_framework)
 
@@ -53,7 +57,6 @@ set_target_properties(join_server join_server_test PROPERTIES
 )
 
 set_target_properties(join_server_test PROPERTIES
-	COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK
 	INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
 )
 
