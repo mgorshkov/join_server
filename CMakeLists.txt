@@ -55,6 +55,11 @@ set_target_properties(join_server join_server_test PROPERTIES
 	CMAKE_CXX_STANDARD_REQUIRED ON
 )
 
+set_target_properties(join_server_test PROPERTIES
+	COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK
+	INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
+)
+
 target_link_libraries(join_server
 	${Boost_LIBRARIES}
 	${CMAKE_THREAD_LIBS_INIT}
@@ -83,3 +88,7 @@ set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
 set(CPACK_PACKAGE_CONTACT mikhail.gorshkov@gmail.com)
 
 include(CPack)
+
+enable_testing()
+
+add_test(join_server_test, tablemanager_test)
