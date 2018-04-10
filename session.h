@@ -10,7 +10,9 @@
 class Session : public std::enable_shared_from_this<Session>
 {
 public:
-    Session(boost::asio::ip::tcp::socket aSocket, std::shared_ptr<CommandExecutor> aCommandExecutor);
+    Session(boost::asio::ip::tcp::socket aSocket,
+        std::shared_ptr<CommandExecutor> aCommandExecutor,
+        boost::asio::io_service& aIoService);
     ~Session();
 
     void Start();
@@ -19,14 +21,15 @@ private:
     void Stop();
 
     void DoProcessCommand();
-    void GetWriteQueue();
+    bool GetWriteQueue();
     void DoWrite();
     void Deliver(std::size_t length);
 
     std::shared_ptr<CommandExecutor> mCommandExecutor;
+    boost::asio::io_service& mIoService;
     Context mContext;
     boost::asio::ip::tcp::socket mSocket;
-    static const std::size_t BufSize = 256;
+    static const std::size_t BufSize = 1;
     std::array<char, BufSize> mReadMsg;
     std::deque<std::string> mWriteMsgs;
 };

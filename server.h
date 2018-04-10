@@ -16,6 +16,7 @@ private:
 
     boost::asio::ip::tcp::acceptor mAcceptor;
     boost::asio::ip::tcp::socket mSocket;
+    boost::asio::io_service& mIoService;
 
     TableManager mTableManager;
     std::shared_ptr<CommandExecutor> mCommandExecutor;

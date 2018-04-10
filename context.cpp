@@ -85,10 +85,20 @@ void Context::Stop()
 CompleteOperationStatuses Context::GetOutboundQueue()
 {
     std::unique_lock<std::mutex> lock(mQueueMutex);
+#ifdef DEBUG_PRINT
+    std::cout << "Context::GetOutboundQueue" << std::endl;
+#endif
     if (mOutboundStatuses.empty())
         return CompleteOperationStatuses{};
+#ifdef DEBUG_PRINT
+    std::cout << "Context::GetOutboundQueue 2" << std::endl;
+#endif
     auto statuses = mOutboundStatuses.front();
     mOutboundStatuses.pop();
+#ifdef DEBUG_PRINT
+    std::cout << "Context::GetOutboundQueue 3" << std::endl;
+#endif
+
     return statuses;
 }
 

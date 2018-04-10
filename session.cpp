@@ -4,9 +4,10 @@
 
 using boost::asio::ip::tcp;
 
-Session::Session(tcp::socket aSocket, std::shared_ptr<CommandExecutor> aCommandExecutor)
+Session::Session(tcp::socket aSocket, std::shared_ptr<CommandExecutor> aCommandExecutor, boost::asio::io_service& aIoService)
     : mSocket(std::move(aSocket))
     , mContext(aCommandExecutor)
+    , mIoService(aIoService)
 {
 #ifdef DEBUG_PRINT
     std::cout << "Session::Session, this==" << this << std::endl;
@@ -28,41 +29,55 @@ void Session::Start()
 
 void Session::Stop()
 {
+#ifdef DEBUG_PRINT
+    std::cout << "Session::Stop 1, this==" << this << std::endl;
+#endif
     mSocket.close();
     mContext.Stop();
+#ifdef DEBUG_PRINT
+    std::cout << "Session::Stop 2, this==" << this << std::endl;
+#endif
 }
 
 void Session::DoProcessCommand()
 {
     auto self(shared_from_this());
 
+#ifdef DEBUG_PRINT
+    std::cout << "Session::DoProcessCommand 1, this==" << this << std::endl;
+#endif
+
+    boost::asio::deadline_timer timer(mIoService);
+    const boost::posix_time::time_duration timeout = boost::posix_time::milliseconds{100};
+    timer.expires_from_now(timeout);
+    timer.async_wait(
+        [this, self](boost::system::error_code ec)
+        {
+             if (GetWriteQueue())
+                 DoWrite(); 
+        });
     boost::asio::async_read(mSocket,
         boost::asio::buffer(mReadMsg),
         [this, self](boost::system::error_code ec, std::size_t length)
         {
 #ifdef DEBUG_PRINT
-            std::cout << "Session::DoRead, this==" << this << ", ec=" << ec << ", mReadMsg=" << &mReadMsg[0] << ", length=" << length << std::endl;
+            std::cout << "Session::DoProcessCommand 2, this==" << this << ", ec=" << ec << ", mReadMsg=" << std::string(&mReadMsg[0], length) << ", length=" << length << std::endl;
 #endif
-            Deliver(length);
-
-            GetWriteQueue();
-            DoWrite();    
-
             if (!ec)
-                DoProcessCommand();
+            {
+                Deliver(length);
+                DoProcessCommand();                    
+            }
             else
                 Stop();
         });
 }
 
-void Session::GetWriteQueue()
+bool Session::GetWriteQueue()
 {
     auto statuses = mContext.GetOutboundQueue();
-    while (statuses.empty())
-    {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        statuses = mContext.GetOutboundQueue();
-    }
+    if (statuses.empty())
+        return false;
     std::stringstream str;
     for (const auto& status : statuses)
         str << status;
@@ -70,29 +85,35 @@ void Session::GetWriteQueue()
     std::cout << "Session::GetWriteQueue, this==" << this << ", str=" << str.str() << std::endl;
 #endif
     mWriteMsgs.push_back(str.str());
+    return true;
 }
   
 void Session::DoWrite()
 {
-    if (mWriteMsgs.empty())
-        return;
+#ifdef DEBUG_PRINT
+    std::cout << "Session::DoWrite 1, this==" << this << std::endl;
+#endif
+    auto self(shared_from_this());
 
     boost::asio::async_write(mSocket,
         boost::asio::buffer(mWriteMsgs.front().c_str(),
             mWriteMsgs.front().size()),
-    [this](boost::system::error_code ec, std::size_t /*length*/)
-       {
+        [this, self](boost::system::error_code ec, std::size_t /*length*/)
+        {
 #ifdef DEBUG_PRINT
-           std::cout << "Session::DoWrite, this==" << this << ", ec=" << ec << std::endl;
+           std::cout << "Session::DoWrite 2, this==" << this << ", ec=" << ec << ", msg=" << mWriteMsgs.front().c_str() << std::endl;
 #endif
            mWriteMsgs.pop_front();
-
+#ifdef DEBUG_PRINT
+           std::cout << "Session::DoWrite 3, this==" << this << ", ec=" << ec << std::endl;
+#endif
            if (!ec)
            {
 #ifdef DEBUG_PRINT
-               std::cout << "Session::DoWrite 2, this==" << this << ", ec=" << ec << std::endl;
+               std::cout << "Session::DoWrite 3, this==" << this << ", ec=" << ec << std::endl;
 #endif
-               DoWrite();
+               if (!mWriteMsgs.empty())
+                   DoWrite();
            }
            else
                Stop();

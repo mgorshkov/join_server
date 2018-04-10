@@ -25,7 +25,7 @@ struct TableRow
 
     friend std::ostream& operator << (std::ostream& stream, const TableRow& tr)
     {
-        return stream << std::string("Id: ") << std::to_string(tr.mId) << std::string(", Name: ") << tr.mName;
+        return stream << "Id: " << std::to_string(tr.mId) << ", Name: " << tr.mName;
     }
 };
 
@@ -66,6 +66,9 @@ inline std::ostream& operator << (std::ostream& stream, OperationStatus os)
     case OperationStatus::UnknownCommand:
         status = "ERR unknown command";
         break;
+    case OperationStatus::UnknownTableName:
+        status = "ERR unknown table";
+        break;
     case OperationStatus::NoTable:
         status = "ERR no table";
         break;
@@ -105,7 +108,7 @@ struct CompleteOperationStatus
             stream << os.mDump;
         stream << os.mStatus;
         if (!os.mMessage.empty())
-            stream << std::string(" ") << os.mMessage;
+            stream << " " << os.mMessage;
         stream << std::endl;
         return stream;
     }
@@ -157,11 +160,11 @@ struct CompleteCommand
 
     friend std::ostream& operator << (std::ostream& stream, CompleteCommand cc)
     {
-        stream << std::string("command: ");
+        stream << "command: ";
         stream << cc.mCommand;
-        stream << std::string(", table: ");
+        stream << ", table: ";
         stream << cc.mTableName;
-        stream << std::string(", row: ");
+        stream << ", row: ";
         stream << cc.mRow;
         return stream;
     }

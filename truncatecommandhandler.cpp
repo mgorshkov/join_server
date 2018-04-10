@@ -16,9 +16,9 @@ CompleteCommand TruncateCommandHandler::Parse(const std::string& aLine)
 {
     std::string tableName = aLine;
 
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
     std::cout << "TruncateCommandHandler::Parse, tableName=" << tableName << std::endl;
-//#endif
+#endif
 
     return CompleteCommand{Command::Truncate, tableName};
 }
