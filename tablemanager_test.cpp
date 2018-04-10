@@ -99,12 +99,14 @@ BOOST_FIXTURE_TEST_CASE(test_intersection, Fixture)
     auto result = mTableManager.Intersection();
     BOOST_CHECK_EQUAL(result.mStatus, OperationStatus::Ok);
 
+    BOOST_CHECK_EQUAL(result.mMessage, "");
+
     std::stringstream str;
     str << "3,violation,proposal" << std::endl;
     str << "4,quality,example" << std::endl;
     str << "5,precision,lake" << std::endl;
 
-    BOOST_CHECK_EQUAL(result.mMessage, str.str());
+    BOOST_CHECK_EQUAL(result.mDump, str.str());
 }
 
 BOOST_FIXTURE_TEST_CASE(test_symmetric_difference, Fixture)
@@ -126,6 +128,8 @@ BOOST_FIXTURE_TEST_CASE(test_symmetric_difference, Fixture)
     auto result = mTableManager.SymmetricDifference();
     BOOST_CHECK_EQUAL(result.mStatus, OperationStatus::Ok);
 
+    BOOST_CHECK_EQUAL(result.mMessage, "");
+
     std::stringstream str;
     str << "0,lean," << std::endl;
     str << "1,sweater," << std::endl;
@@ -134,7 +138,7 @@ BOOST_FIXTURE_TEST_CASE(test_symmetric_difference, Fixture)
     str << "7,,wonder" << std::endl;
     str << "8,,selection" << std::endl;
 
-    BOOST_CHECK_EQUAL(result.mMessage, str.str());
+    BOOST_CHECK_EQUAL(result.mDump, str.str());
 }
 
 }
