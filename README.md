@@ -9,8 +9,8 @@
 имеет название A, вторая - B и общую структуру:
 ```
 {
-int id;
-std::string name;
+    int id;
+    std::string name;
 }
 ```
 *id* является первичным ключом и не может дублироваться в одной таблице.
@@ -19,12 +19,12 @@ std::string name;
 ```
 id | name
 ---+----------
-0 | lean
-1 | sweater
-2 | frank
-3 | violation
-4 | quality
-5 | precision
+0  | lean
+1  | sweater
+2  | frank
+3  | violation
+4  | quality
+5  | precision
 ```
 
 и содержимого таблицы B:
@@ -32,23 +32,23 @@ id | name
 ```
 id | name
 ---+----------
-3 | proposal
-4 | example
-5 | lake
-6 | flour
-7 | wonder
-8 | selection
+3  | proposal
+4  | example
+5  | lake
+6  | flour
+7  | wonder
+8  | selection
 ```
 
 необходимо уметь формировать пересечение данных из двух таблиц в виде
 коллекции:
 
 ```
-id | A | B
+id | A         | B
 ---+-----------+---------
-3 | violation | proposal
-4 | quality   | example
-5 | precision | lake
+3  | violation | proposal
+4  | quality   | example
+5  | precision | lake
 ```
 
 Необходимо уметь формировать симметрическую разность данных из двух
@@ -56,13 +56,13 @@ id | A | B
 
 ```
 id | A        | B
----+-----------+---------
-0 | lean      |
-1 | sweater   |
-2 | frank     |
-6 |           | flour
-7 |           | wonder
-8 |           | selection
+---+----------+---------
+0  | lean     |
+1  | sweater  |
+2  | frank    |
+6  |          | flour
+7  |          | wonder
+8  |          | selection
 ```
 
 Строки должны следовать в порядке возрастания поля *id*.
