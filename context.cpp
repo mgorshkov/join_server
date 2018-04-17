@@ -84,20 +84,22 @@ void Context::Stop()
 
 CompleteOperationStatuses Context::GetOutboundQueue()
 {
-    std::unique_lock<std::mutex> lock(mQueueMutex);
-#ifdef DEBUG_PRINT
+    std::unique_lock<std::mutex> lock(mQueueMutex, std::defer_lock);
+    if (!lock.try_lock())
+        return CompleteOperationStatuses{};
+//#ifdef DEBUG_PRINT
     std::cout << "Context::GetOutboundQueue" << std::endl;
-#endif
+//#endif
     if (mOutboundStatuses.empty())
         return CompleteOperationStatuses{};
-#ifdef DEBUG_PRINT
+//#ifdef DEBUG_PRINT
     std::cout << "Context::GetOutboundQueue 2" << std::endl;
-#endif
+//#endif
     auto statuses = mOutboundStatuses.front();
     mOutboundStatuses.pop();
-#ifdef DEBUG_PRINT
+//#ifdef DEBUG_PRINT
     std::cout << "Context::GetOutboundQueue 3" << std::endl;
-#endif
+//#endif
 
     return statuses;
 }
@@ -160,15 +162,15 @@ void Context::ThreadProc(Context* aContext, std::shared_ptr<CommandExecutor> aCo
     {
         while (!aContext->mDone.load())
         {
-#ifdef DEBUG_PRINT
+//#ifdef DEBUG_PRINT
             std::cout << "Context::ThreadProc0, this==" << aContext << std::endl;
-#endif
+//#endif
             std::unique_lock<std::mutex> lk(aContext->mStreamMutex);
             while (!aContext->mNotified.load())
                 aContext->mCondition.wait(lk);
-#ifdef DEBUG_PRINT
+//#ifdef DEBUG_PRINT
             std::cout << "Context::ThreadProc01, this==" << aContext << std::endl;
-#endif
+//#endif
             lk.unlock();
             {
                 std::unique_lock<std::mutex> lk(aContext->mQueueMutex);
