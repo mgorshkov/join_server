@@ -123,25 +123,27 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    std::stringstream mStream;</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    std::mutex mStreamMutex;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    std::condition_variable mCondition;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    std::atomic_bool mDone{<span class="keyword">false</span>};</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    std::atomic_bool mNotified{<span class="keyword">false</span>};</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    std::thread mThread;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    std::condition_variable mQueueCondition;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    std::atomic_bool mDone{<span class="keyword">false</span>};</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    std::atomic_bool mNotified{<span class="keyword">false</span>};</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    std::atomic_bool mQueueNotified{<span class="keyword">false</span>};</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    std::queue&lt;CompleteOperationStatuses&gt; mOutboundStatuses;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    std::mutex mQueueMutex;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;};</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    std::thread mThread;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    std::queue&lt;CompleteOperationStatuses&gt; mOutboundStatuses;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    std::mutex mQueueMutex;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;};</div>
 <div class="ttc" id="structs_8h_html"><div class="ttname"><a href="structs_8h.html">structs.h</a></div></div>
-<div class="ttc" id="classContext_html_a1258d59c0887c694f943401907dfd4bf"><div class="ttname"><a href="classContext.html#a1258d59c0887c694f943401907dfd4bf">Context::Context</a></div><div class="ttdeci">Context(std::shared_ptr&lt; CommandExecutor &gt; aCommandExecutor=nullptr)</div><div class="ttdef"><b>Definition:</b> context.cpp:5</div></div>
+<div class="ttc" id="classContext_html_a1258d59c0887c694f943401907dfd4bf"><div class="ttname"><a href="classContext.html#a1258d59c0887c694f943401907dfd4bf">Context::Context</a></div><div class="ttdeci">Context(std::shared_ptr&lt; CommandExecutor &gt; aCommandExecutor=nullptr)</div><div class="ttdef"><b>Definition:</b> context.cpp:7</div></div>
 <div class="ttc" id="classContext_html"><div class="ttname"><a href="classContext.html">Context</a></div><div class="ttdef"><b>Definition:</b> context.h:15</div></div>
-<div class="ttc" id="classContext_html_a9eddc3597a129306ed5e5194db0b1ccf"><div class="ttname"><a href="classContext.html#a9eddc3597a129306ed5e5194db0b1ccf">Context::Stop</a></div><div class="ttdeci">void Stop()</div><div class="ttdef"><b>Definition:</b> context.cpp:64</div></div>
-<div class="ttc" id="classContext_html_a2d34e4556448e40693f61d15e091b604"><div class="ttname"><a href="classContext.html#a2d34e4556448e40693f61d15e091b604">Context::~Context</a></div><div class="ttdeci">~Context()</div><div class="ttdef"><b>Definition:</b> context.cpp:13</div></div>
-<div class="ttc" id="classContext_html_a1a24ae2b78bf7d25bb97b73df6b73340"><div class="ttname"><a href="classContext.html#a1a24ae2b78bf7d25bb97b73df6b73340">Context::Start</a></div><div class="ttdeci">void Start()</div><div class="ttdef"><b>Definition:</b> context.cpp:26</div></div>
-<div class="ttc" id="classContext_html_a905579002f13e66975a61f4fffeb282c"><div class="ttname"><a href="classContext.html#a905579002f13e66975a61f4fffeb282c">Context::GetOutboundQueue</a></div><div class="ttdeci">CompleteOperationStatuses GetOutboundQueue()</div><div class="ttdef"><b>Definition:</b> context.cpp:85</div></div>
-<div class="ttc" id="classContext_html_af0b92cad0d49b7fce320cb859f41bb9d"><div class="ttname"><a href="classContext.html#af0b92cad0d49b7fce320cb859f41bb9d">Context::SetExecutor</a></div><div class="ttdeci">void SetExecutor(std::shared_ptr&lt; CommandExecutor &gt; aCommandExecutor)</div><div class="ttdef"><b>Definition:</b> context.cpp:21</div></div>
+<div class="ttc" id="classContext_html_a9eddc3597a129306ed5e5194db0b1ccf"><div class="ttname"><a href="classContext.html#a9eddc3597a129306ed5e5194db0b1ccf">Context::Stop</a></div><div class="ttdeci">void Stop()</div><div class="ttdef"><b>Definition:</b> context.cpp:67</div></div>
+<div class="ttc" id="classContext_html_a2d34e4556448e40693f61d15e091b604"><div class="ttname"><a href="classContext.html#a2d34e4556448e40693f61d15e091b604">Context::~Context</a></div><div class="ttdeci">~Context()</div><div class="ttdef"><b>Definition:</b> context.cpp:15</div></div>
+<div class="ttc" id="classContext_html_a1a24ae2b78bf7d25bb97b73df6b73340"><div class="ttname"><a href="classContext.html#a1a24ae2b78bf7d25bb97b73df6b73340">Context::Start</a></div><div class="ttdeci">void Start()</div><div class="ttdef"><b>Definition:</b> context.cpp:28</div></div>
+<div class="ttc" id="classContext_html_a905579002f13e66975a61f4fffeb282c"><div class="ttname"><a href="classContext.html#a905579002f13e66975a61f4fffeb282c">Context::GetOutboundQueue</a></div><div class="ttdeci">CompleteOperationStatuses GetOutboundQueue()</div><div class="ttdef"><b>Definition:</b> context.cpp:88</div></div>
+<div class="ttc" id="classContext_html_af0b92cad0d49b7fce320cb859f41bb9d"><div class="ttname"><a href="classContext.html#af0b92cad0d49b7fce320cb859f41bb9d">Context::SetExecutor</a></div><div class="ttdeci">void SetExecutor(std::shared_ptr&lt; CommandExecutor &gt; aCommandExecutor)</div><div class="ttdef"><b>Definition:</b> context.cpp:23</div></div>
 <div class="ttc" id="structs_8h_html_ab0e813430bb62ca51b84434c81b7b9c1"><div class="ttname"><a href="structs_8h.html#ab0e813430bb62ca51b84434c81b7b9c1">CompleteOperationStatuses</a></div><div class="ttdeci">std::list&lt; CompleteOperationStatus &gt; CompleteOperationStatuses</div><div class="ttdef"><b>Definition:</b> structs.h:117</div></div>
 <div class="ttc" id="commandexecutor_8h_html"><div class="ttname"><a href="commandexecutor_8h.html">commandexecutor.h</a></div></div>
-<div class="ttc" id="classContext_html_ab1aeef7739d1924c9039b75fef26bc4c"><div class="ttname"><a href="classContext.html#ab1aeef7739d1924c9039b75fef26bc4c">Context::ProcessData</a></div><div class="ttdeci">void ProcessData(const char *aData, std::size_t aSize)</div><div class="ttdef"><b>Definition:</b> context.cpp:40</div></div>
+<div class="ttc" id="classContext_html_ab1aeef7739d1924c9039b75fef26bc4c"><div class="ttname"><a href="classContext.html#ab1aeef7739d1924c9039b75fef26bc4c">Context::ProcessData</a></div><div class="ttdeci">void ProcessData(const char *aData, std::size_t aSize)</div><div class="ttdef"><b>Definition:</b> context.cpp:43</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
