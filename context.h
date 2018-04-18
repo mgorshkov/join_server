@@ -37,8 +37,10 @@ private:
     std::stringstream mStream;
     std::mutex mStreamMutex;
     std::condition_variable mCondition;
+    std::condition_variable mQueueCondition;
     std::atomic_bool mDone{false};
     std::atomic_bool mNotified{false};
+    std::atomic_bool mQueueNotified{false};
 
     std::thread mThread;
 

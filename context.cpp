@@ -1,4 +1,6 @@
 #include <iostream>
+#include <chrono>
+using namespace std::chrono_literals;
 
 #include "context.h"
 
@@ -31,6 +33,7 @@ void Context::Start()
 
     mDone = false;
     mNotified = false;
+    mQueueNotified = false;
     mStream.clear();
     mStream.str("");
 
@@ -84,21 +87,43 @@ void Context::Stop()
 
 CompleteOperationStatuses Context::GetOutboundQueue()
 {
-    std::unique_lock<std::mutex> lock(mQueueMutex, std::defer_lock);
-    if (!lock.try_lock())
-        return CompleteOperationStatuses{};
+    if (!mQueueNotified.load())
+    {
 //#ifdef DEBUG_PRINT
-    std::cout << "Context::GetOutboundQueue" << std::endl;
+        std::cout << "Context::GetOutboundQueue 1" << std::endl;
+//#endif
+        return CompleteOperationStatuses{};
+    }
+//#ifdef DEBUG_PRINT
+    std::cout << "Context::GetOutboundQueue 2" << std::endl;
+//#endif
+//    std::unique_lock<std::mutex> lk(mQueueMutex);
+//    if (std::cv_status::timeout == mQueueCondition.wait_for(lk, 100ms))
+//    {
+//#ifdef DEBUG_PRINT
+//        std::cout << "Context::GetOutboundQueue 3" << std::endl;
+//#endif
+//        return CompleteOperationStatuses{};
+//    }
+//    lk.unlock();
+//#ifdef DEBUG_PRINT
+    std::cout << "Context::GetOutboundQueue 4" << std::endl;
+//#endif
+    mQueueNotified = false;
+//#ifdef DEBUG_PRINT
+    std::cout << "Context::GetOutboundQueue 5" << std::endl;
 //#endif
     if (mOutboundStatuses.empty())
         return CompleteOperationStatuses{};
 //#ifdef DEBUG_PRINT
-    std::cout << "Context::GetOutboundQueue 2" << std::endl;
+    std::cout << "Context::GetOutboundQueue 6" << std::endl;
 //#endif
     auto statuses = mOutboundStatuses.front();
     mOutboundStatuses.pop();
 //#ifdef DEBUG_PRINT
-    std::cout << "Context::GetOutboundQueue 3" << std::endl;
+    std::cout << "Context::GetOutboundQueue 7" << std::endl;
+    for (auto status : statuses)
+        std::cout << status << std::endl;
 //#endif
 
     return statuses;
@@ -111,44 +136,44 @@ CompleteOperationStatuses Context::ProcessStream(std::shared_ptr<CommandExecutor
         std::string line;
         std::lock_guard<std::mutex> lk(mStreamMutex);
         mStream.seekp(0);
-#ifdef DEBUG_PRINT
+//#ifdef DEBUG_PRINT
         std::cout << "Context::ProcessStream 1, pos = " << mStream.tellp() << ", str=" <<  mStream.str() << std::endl;
-#endif
+//#endif
         while (!std::getline(mStream, line).eof())
         {
             if (line.length() > 0 && line[line.length() - 1] == '\r')
             {
-                 line = line.substr(0, line.length() - 1);
+                line = line.substr(0, line.length() - 1);
             }
-#ifdef DEBUG_PRINT
+//#ifdef DEBUG_PRINT
             std::cout << "Context::ProcessStream 2, line = " << line << ";" << std::endl;
-#endif
+//#endif
             text.push_back(line);
         }
-#ifdef DEBUG_PRINT
+//#ifdef DEBUG_PRINT
         std::cout << "Context::ProcessStream 3, pos = " << mStream.tellp() << std::endl;
-#endif
+//#endif
         mStream.clear();
         mStream.str("");
-#ifdef DEBUG_PRINT
+//#ifdef DEBUG_PRINT
         std::cout << "Context::ProcessStream 4, stream = " << mStream.str() << ", pos = " << mStream.tellp() << std::endl;
-#endif
+//#endif
         mStream.write(line.c_str(), line.size());
-#ifdef DEBUG_PRINT
+//#ifdef DEBUG_PRINT
         std::cout << "Context::ProcessStream 5, pos = " << mStream.tellp() << ", line = " << line << std::endl;
-#endif
+//#endif
     }
     CompleteOperationStatuses results;
     for (const auto& line: text)    
     {
-#ifdef DEBUG_PRINT
+//#ifdef DEBUG_PRINT
         std::cout << "Context::ProcessStream 6, line=" << line << ";" << std::endl;
-#endif
+//#endif
         auto result = aCommandExecutor->RunCommand(line);
         results.push_back(result);
-#ifdef DEBUG_PRINT
+//#ifdef DEBUG_PRINT
         std::cout << "Context::ProcessStream 7, result=" << result << std::endl;
-#endif
+//#endif
     }
     return results;
 }
@@ -162,21 +187,29 @@ void Context::ThreadProc(Context* aContext, std::shared_ptr<CommandExecutor> aCo
     {
         while (!aContext->mDone.load())
         {
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
             std::cout << "Context::ThreadProc0, this==" << aContext << std::endl;
-//#endif
+#endif
             std::unique_lock<std::mutex> lk(aContext->mStreamMutex);
             while (!aContext->mNotified.load())
                 aContext->mCondition.wait(lk);
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
             std::cout << "Context::ThreadProc01, this==" << aContext << std::endl;
-//#endif
+#endif
             lk.unlock();
             {
+#ifdef DEBUG_PRINT
+                std::cout << "Context::ThreadProc02, this==" << aContext << std::endl;
+#endif
                 std::unique_lock<std::mutex> lk(aContext->mQueueMutex);
+#ifdef DEBUG_PRINT
+                std::cout << "Context::ThreadProc03, this==" << aContext << std::endl;
+#endif
                 aContext->mOutboundStatuses.push(aContext->ProcessStream(aCommandExecutor));
             }
+            aContext->mQueueCondition.notify_one();
             aContext->mNotified = false;
+            aContext->mQueueNotified = true;
         }
 #ifdef DEBUG_PRINT
         std::cout << "Context::ThreadProc1, this==" << aContext << std::endl;
@@ -185,6 +218,8 @@ void Context::ThreadProc(Context* aContext, std::shared_ptr<CommandExecutor> aCo
             std::unique_lock<std::mutex> lk(aContext->mQueueMutex);
             aContext->mOutboundStatuses.push(aContext->ProcessStream(aCommandExecutor));
         }
+        aContext->mQueueCondition.notify_one();
+        aContext->mQueueNotified = true;
 #ifdef DEBUG_PRINT
         std::cout << "Context::ThreadProc2, this==" << aContext << std::endl;
 #endif

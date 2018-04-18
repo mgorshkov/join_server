@@ -79,13 +79,19 @@ bool Session::GetWriteQueue()
     std::cout << "Session::GetWriteQueue 1, this==" << this << std::endl;
 //#endif
     auto statuses = mContext.GetOutboundQueue();
+//#ifdef DEBUG_PRINT
+    std::cout << "Session::GetWriteQueue 2, this==" << this << std::endl;
+//#endif
     if (statuses.empty())
         return false;
+//#ifdef DEBUG_PRINT
+    std::cout << "Session::GetWriteQueue 3, this==" << this << std::endl;
+//#endif
     std::stringstream str;
     for (const auto& status : statuses)
         str << status;
 //#ifdef DEBUG_PRINT
-    std::cout << "Session::GetWriteQueue 2, this==" << this << ", str=" << str.str() << std::endl;
+    std::cout << "Session::GetWriteQueue 4, this==" << this << ", str=" << str.str() << std::endl;
 //#endif
     mWriteMsgs.push_back(str.str());
     return true;
@@ -110,16 +116,14 @@ void Session::DoWrite()
 #ifdef DEBUG_PRINT
            std::cout << "Session::DoWrite 3, this==" << this << ", ec=" << ec << std::endl;
 #endif
-           if (!ec)
+           if (ec)
+               Stop();
+           else
            {
 #ifdef DEBUG_PRINT
                std::cout << "Session::DoWrite 3, this==" << this << ", ec=" << ec << std::endl;
 #endif
-               //if (!mWriteMsgs.empty())
-               //    DoWrite();
            }
-           else
-               Stop();
        });
 }
 
