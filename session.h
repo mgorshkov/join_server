@@ -20,6 +20,7 @@ public:
 private:
     void Stop();
 
+    void ProcessWrite();
     void DoRead();
     bool GetWriteQueue();
     void DoWrite();
@@ -31,4 +32,6 @@ private:
     boost::asio::ip::tcp::socket mSocket;
     boost::asio::streambuf mBuffer;
     std::deque<std::string> mWriteMsgs;
+    std::thread mWriteThread;
+    std::atomic_bool mDone{false};
 };

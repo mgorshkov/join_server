@@ -61,9 +61,9 @@ void Context::ProcessData(boost::asio::streambuf* aStream)
     }
     mNotified = true;
     mCondition.notify_one();
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
     std::cout << "Context::ProcessData end, this==" << this << ", stream=" << mStream.str() << std::endl;
-//#endif
+#endif
 }
 
 void Context::Stop()
@@ -99,34 +99,22 @@ CompleteOperationStatuses Context::GetOutboundQueue()
 #ifdef DEBUG_PRINT
     std::cout << "Context::GetOutboundQueue 2" << std::endl;
 #endif
-//    std::unique_lock<std::mutex> lk(mQueueMutex);
-//    if (std::cv_status::timeout == mQueueCondition.wait_for(lk, 100ms))
-//    {
-//#ifdef DEBUG_PRINT
-//        std::cout << "Context::GetOutboundQueue 3" << std::endl;
-//#endif
-//        return CompleteOperationStatuses{};
-//    }
-//    lk.unlock();
-//#ifdef DEBUG_PRINT
-    std::cout << "Context::GetOutboundQueue 4" << std::endl;
-//#endif
     mQueueNotified = false;
-//#ifdef DEBUG_PRINT
-    std::cout << "Context::GetOutboundQueue 5" << std::endl;
-//#endif
+#ifdef DEBUG_PRINT
+    std::cout << "Context::GetOutboundQueue 3" << std::endl;
+#endif
     if (mOutboundStatuses.empty())
         return CompleteOperationStatuses{};
-//#ifdef DEBUG_PRINT
-    std::cout << "Context::GetOutboundQueue 6" << std::endl;
-//#endif
+#ifdef DEBUG_PRINT
+    std::cout << "Context::GetOutboundQueue 4" << std::endl;
+#endif
     auto statuses = mOutboundStatuses.front();
     mOutboundStatuses.pop();
-//#ifdef DEBUG_PRINT
-    std::cout << "Context::GetOutboundQueue 7" << std::endl;
+#ifdef DEBUG_PRINT
+    std::cout << "Context::GetOutboundQueue 5" << std::endl;
     for (auto status : statuses)
         std::cout << status << std::endl;
-//#endif
+#endif
 
     return statuses;
 }
@@ -138,9 +126,9 @@ CompleteOperationStatuses Context::ProcessStream(std::shared_ptr<CommandExecutor
         std::string line;
         std::lock_guard<std::mutex> lk(mStreamMutex);
         mStream.seekp(0);
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
         std::cout << "Context::ProcessStream 1, pos = " << mStream.tellp() << ", str=" <<  mStream.str() << std::endl;
-//#endif
+#endif
         while (!std::getline(mStream, line).eof())
         {
             if (line.length() > 0 && line[line.length() - 1] == '\r')
@@ -166,12 +154,12 @@ CompleteOperationStatuses Context::ProcessStream(std::shared_ptr<CommandExecutor
 #endif
     }
     CompleteOperationStatuses results;
-    for (const auto& line: text)    
+    for (const auto& line: text)
     {
         auto lineTrimmed = trim_copy(line);
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
         std::cout << "Context::ProcessStream 6, line=" << lineTrimmed << ";" << std::endl;
-//#endif
+#endif
         if (lineTrimmed.empty())
             continue;
         auto result = aCommandExecutor->RunCommand(lineTrimmed);

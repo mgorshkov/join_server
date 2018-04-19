@@ -23,6 +23,7 @@ Session::~Session()
 
 void Session::Start()
 {
+    mWriteThread = std::move(std::thread(&Session::ProcessWrite, this));
     mContext.Start();
     DoRead();
 }
@@ -34,24 +35,41 @@ void Session::Stop()
 #endif
     mSocket.close();
     mContext.Stop();
+    mDone = true;
+    if (mWriteThread.joinable())
+        mWriteThread.join();
 #ifdef DEBUG_PRINT
     std::cout << "Session::Stop 2, this==" << this << std::endl;
 #endif
+}
+
+void Session::ProcessWrite()
+{
+    try
+    {
+        while (!mDone.load())
+        {
+            if (GetWriteQueue())
+                DoWrite();
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+    }
+    catch (std::exception& e)
+    {
+        std::cerr << "Exception: " << e.what() << "\n";
+    }
 }
 
 void Session::DoRead()
 {
     auto self(shared_from_this());
 
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
     std::cout << "Session::DoProcessCommand 1, this==" << this << std::endl;
-//#endif
-
-    if (GetWriteQueue())
-        DoWrite();
+#endif
 
     boost::asio::async_read_until(mSocket, mBuffer, '\n',
-        [this, self](boost::system::error_code ec, std::size_t length)
+        [this, self](boost::system::error_code ec, std::size_t /*length*/)
         {
 #ifdef DEBUG_PRINT
             std::cout << "Session::DoProcessCommand 2, this==" << this << ", ec=" << ec << ", mBuffer=" << &mBuffer << ", length=" << length << std::endl;
