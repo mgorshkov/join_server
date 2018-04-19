@@ -106,22 +106,21 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keywordtype">void</span> Stop();</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordtype">void</span> DoProcessCommand();</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordtype">void</span> DoRead();</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordtype">bool</span> GetWriteQueue();</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keywordtype">void</span> DoWrite();</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keywordtype">void</span> Deliver(std::size_t length);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keywordtype">void</span> Deliver();</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    std::shared_ptr&lt;CommandExecutor&gt; mCommandExecutor;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    boost::asio::io_service&amp; mIoService;</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <a class="code" href="classContext.html">Context</a> mContext;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    boost::asio::ip::tcp::socket mSocket;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> std::size_t BufSize = 1;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    std::array&lt;char, BufSize&gt; mReadMsg;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    std::deque&lt;std::string&gt; mWriteMsgs;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;};</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    boost::asio::streambuf mBuffer;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    std::deque&lt;std::string&gt; mWriteMsgs;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;};</div>
 <div class="ttc" id="structs_8h_html"><div class="ttname"><a href="structs_8h.html">structs.h</a></div></div>
 <div class="ttc" id="context_8h_html"><div class="ttname"><a href="context_8h.html">context.h</a></div></div>
-<div class="ttc" id="classContext_html"><div class="ttname"><a href="classContext.html">Context</a></div><div class="ttdef"><b>Definition:</b> context.h:15</div></div>
+<div class="ttc" id="classContext_html"><div class="ttname"><a href="classContext.html">Context</a></div><div class="ttdef"><b>Definition:</b> context.h:16</div></div>
 <div class="ttc" id="classSession_html_a68020021e9d13c85b641d853646e8b7a"><div class="ttname"><a href="classSession.html#a68020021e9d13c85b641d853646e8b7a">Session::Start</a></div><div class="ttdeci">void Start()</div><div class="ttdef"><b>Definition:</b> session.cpp:24</div></div>
 <div class="ttc" id="classSession_html"><div class="ttname"><a href="classSession.html">Session</a></div><div class="ttdef"><b>Definition:</b> session.h:10</div></div>
 <div class="ttc" id="classSession_html_a8753bb9dee966b7d39abc9b7237cd665"><div class="ttname"><a href="classSession.html#a8753bb9dee966b7d39abc9b7237cd665">Session::~Session</a></div><div class="ttdeci">~Session()</div><div class="ttdef"><b>Definition:</b> session.cpp:17</div></div>

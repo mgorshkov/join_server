@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['main',['main',['../client__main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;client_main.cpp'],['../server__main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;server_main.cpp']]]
+  ['ltrim',['ltrim',['../utils_8cpp.html#ad43a4a97af0218124c6f1343dd27a295',1,'ltrim(std::string &amp;s):&#160;utils.cpp'],['../utils_8h.html#ad43a4a97af0218124c6f1343dd27a295',1,'ltrim(std::string &amp;s):&#160;utils.cpp']]]
 ];

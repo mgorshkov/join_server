@@ -1,10 +1,10 @@
 <map id="server.cpp" name="server.cpp">
-<area shape="rect" id="node2" href="$server_8h.html" title="server.h" alt="" coords="152,155,221,181"/>
-<area shape="rect" id="node18" href="$session_8h.html" title="session.h" alt="" coords="301,80,379,107"/>
-<area shape="rect" id="node5" href="$tablemanager_8h.html" title="tablemanager.h" alt="" coords="11,304,121,331"/>
-<area shape="rect" id="node15" href="$commandexecutor_8h.html" title="commandexecutor.h" alt="" coords="398,229,537,256"/>
-<area shape="rect" id="node9" href="$structs_8h.html" title="structs.h" alt="" coords="442,453,515,480"/>
-<area shape="rect" id="node14" href="$itablemanager_8h.html" title="itablemanager.h" alt="" coords="291,379,405,405"/>
-<area shape="rect" id="node17" href="$commandhandler_8h.html" title="commandhandler.h" alt="" coords="413,304,544,331"/>
-<area shape="rect" id="node20" href="$context_8h.html" title="context.h" alt="" coords="801,155,876,181"/>
+<area shape="rect" id="node2" href="$server_8h.html" title="server.h" alt="" coords="402,155,472,181"/>
+<area shape="rect" id="node18" href="$session_8h.html" title="session.h" alt="" coords="570,80,648,107"/>
+<area shape="rect" id="node5" href="$tablemanager_8h.html" title="tablemanager.h" alt="" coords="50,304,160,331"/>
+<area shape="rect" id="node15" href="$commandexecutor_8h.html" title="commandexecutor.h" alt="" coords="355,229,494,256"/>
+<area shape="rect" id="node9" href="$structs_8h.html" title="structs.h" alt="" coords="418,453,490,480"/>
+<area shape="rect" id="node14" href="$itablemanager_8h.html" title="itablemanager.h" alt="" coords="209,379,324,405"/>
+<area shape="rect" id="node17" href="$commandhandler_8h.html" title="commandhandler.h" alt="" coords="359,304,490,331"/>
+<area shape="rect" id="node20" href="$context_8h.html" title="context.h" alt="" coords="971,155,1046,181"/>
 </map>

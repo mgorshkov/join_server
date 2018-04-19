@@ -1,8 +1,10 @@
 var searchData=
 [
-  ['table',['Table',['../structTable.html#a758484ca0668211d2113264bf54aacf0',1,'Table']]],
-  ['tablemanager',['TableManager',['../classTableManager.html#ae33f3f994f019755552584bec352af9b',1,'TableManager']]],
-  ['tablerow',['TableRow',['../structTableRow.html#acd241036da26a4e3a74f9231a5a4dc8e',1,'TableRow']]],
-  ['truncate',['Truncate',['../classITableManager.html#ab756ae8e20c78b87d34e775aa7e33051',1,'ITableManager::Truncate()'],['../classTableManager.html#a4399c74900f8e519f331bad23b1d5004',1,'TableManager::Truncate()']]],
-  ['truncatecommandhandler',['TruncateCommandHandler',['../classTruncateCommandHandler.html#a098fe0d8d00545d2f460479a348e7ec7',1,'TruncateCommandHandler']]]
+  ['server',['Server',['../classServer.html#a78739c7c881329bdcd886150b2ea5fbc',1,'Server']]],
+  ['session',['Session',['../classSession.html#ae6920c4aa27236dc50629c01f94bcee5',1,'Session']]],
+  ['setexecutor',['SetExecutor',['../classContext.html#af0b92cad0d49b7fce320cb859f41bb9d',1,'Context']]],
+  ['start',['Start',['../classContext.html#a1a24ae2b78bf7d25bb97b73df6b73340',1,'Context::Start()'],['../classSession.html#a68020021e9d13c85b641d853646e8b7a',1,'Session::Start()']]],
+  ['stop',['Stop',['../classContext.html#a9eddc3597a129306ed5e5194db0b1ccf',1,'Context']]],
+  ['symmetricdifference',['SymmetricDifference',['../classITableManager.html#ac078764031cc498fe014d160c0630782',1,'ITableManager::SymmetricDifference()'],['../classTableManager.html#aa0fcc4a8ae5c09f33537d6cdc1854aaf',1,'TableManager::SymmetricDifference()']]],
+  ['symmetricdifferencecommandhandler',['SymmetricDifferenceCommandHandler',['../classSymmetricDifferenceCommandHandler.html#abc91b55c4fc57b3c0fc7682a0f78eeab',1,'SymmetricDifferenceCommandHandler']]]
 ];

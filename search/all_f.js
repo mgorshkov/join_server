@@ -1,16 +1,18 @@
 var searchData=
 [
-  ['table',['Table',['../structTable.html',1,'Table'],['../structTable.html#a758484ca0668211d2113264bf54aacf0',1,'Table::Table()']]],
-  ['tablealreadyexists',['TableAlreadyExists',['../structs_8h.html#ac94ff0554eb8ee494d4431cdb2e6f3afa9aaa4edec0406cefb4d1f7398700a73f',1,'structs.h']]],
-  ['tableindex',['TableIndex',['../structs_8h.html#a43df8ba11cb0350eb54ec0e636034f86',1,'structs.h']]],
-  ['tablemanager',['TableManager',['../classTableManager.html',1,'TableManager'],['../classTableManager.html#ae33f3f994f019755552584bec352af9b',1,'TableManager::TableManager()']]],
-  ['tablemanager_2ecpp',['tablemanager.cpp',['../tablemanager_8cpp.html',1,'']]],
-  ['tablemanager_2eh',['tablemanager.h',['../tablemanager_8h.html',1,'']]],
-  ['tablemanager_5ftest_2ecpp',['tablemanager_test.cpp',['../tablemanager__test_8cpp.html',1,'']]],
-  ['tablerow',['TableRow',['../structTableRow.html',1,'TableRow'],['../structTableRow.html#acd241036da26a4e3a74f9231a5a4dc8e',1,'TableRow::TableRow()']]],
-  ['tables',['Tables',['../structs_8h.html#a0f08adfa807cdf0e5df4bdb9484710c1',1,'structs.h']]],
-  ['truncate',['Truncate',['../classITableManager.html#ab756ae8e20c78b87d34e775aa7e33051',1,'ITableManager::Truncate()'],['../classTableManager.html#a4399c74900f8e519f331bad23b1d5004',1,'TableManager::Truncate()'],['../structs_8h.html#a2afce0a47a93eee73a314d53e4890153aa8156810bfee2bd2b44765b9e91db3bd',1,'Truncate():&#160;structs.h']]],
-  ['truncatecommandhandler',['TruncateCommandHandler',['../classTruncateCommandHandler.html',1,'TruncateCommandHandler'],['../classTruncateCommandHandler.html#a098fe0d8d00545d2f460479a348e7ec7',1,'TruncateCommandHandler::TruncateCommandHandler()']]],
-  ['truncatecommandhandler_2ecpp',['truncatecommandhandler.cpp',['../truncatecommandhandler_8cpp.html',1,'']]],
-  ['truncatecommandhandler_2eh',['truncatecommandhandler.h',['../truncatecommandhandler_8h.html',1,'']]]
+  ['server',['Server',['../classServer.html',1,'Server'],['../classServer.html#a78739c7c881329bdcd886150b2ea5fbc',1,'Server::Server()']]],
+  ['server_2ecpp',['server.cpp',['../server_8cpp.html',1,'']]],
+  ['server_2eh',['server.h',['../server_8h.html',1,'']]],
+  ['server_5fmain_2ecpp',['server_main.cpp',['../server__main_8cpp.html',1,'']]],
+  ['session',['Session',['../classSession.html',1,'Session'],['../classSession.html#ae6920c4aa27236dc50629c01f94bcee5',1,'Session::Session()']]],
+  ['session_2ecpp',['session.cpp',['../session_8cpp.html',1,'']]],
+  ['session_2eh',['session.h',['../session_8h.html',1,'']]],
+  ['setexecutor',['SetExecutor',['../classContext.html#af0b92cad0d49b7fce320cb859f41bb9d',1,'Context']]],
+  ['start',['Start',['../classContext.html#a1a24ae2b78bf7d25bb97b73df6b73340',1,'Context::Start()'],['../classSession.html#a68020021e9d13c85b641d853646e8b7a',1,'Session::Start()']]],
+  ['stop',['Stop',['../classContext.html#a9eddc3597a129306ed5e5194db0b1ccf',1,'Context']]],
+  ['structs_2eh',['structs.h',['../structs_8h.html',1,'']]],
+  ['symdiffcommandhandler_2ecpp',['symdiffcommandhandler.cpp',['../symdiffcommandhandler_8cpp.html',1,'']]],
+  ['symdiffcommandhandler_2eh',['symdiffcommandhandler.h',['../symdiffcommandhandler_8h.html',1,'']]],
+  ['symmetricdifference',['SymmetricDifference',['../classITableManager.html#ac078764031cc498fe014d160c0630782',1,'ITableManager::SymmetricDifference()'],['../classTableManager.html#aa0fcc4a8ae5c09f33537d6cdc1854aaf',1,'TableManager::SymmetricDifference()'],['../structs_8h.html#a2afce0a47a93eee73a314d53e4890153aef8007e0d9eb676e781d218309d7382d',1,'SymmetricDifference():&#160;structs.h']]],
+  ['symmetricdifferencecommandhandler',['SymmetricDifferenceCommandHandler',['../classSymmetricDifferenceCommandHandler.html',1,'SymmetricDifferenceCommandHandler'],['../classSymmetricDifferenceCommandHandler.html#abc91b55c4fc57b3c0fc7682a0f78eeab',1,'SymmetricDifferenceCommandHandler::SymmetricDifferenceCommandHandler()']]]
 ];

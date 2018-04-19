@@ -1,7 +1,10 @@
 var searchData=
 [
-  ['_7ecommandhandler',['~CommandHandler',['../classCommandHandler.html#ac9af4591b2535539aaaaca23a6c43944',1,'CommandHandler']]],
-  ['_7econtext',['~Context',['../classContext.html#a2d34e4556448e40693f61d15e091b604',1,'Context']]],
-  ['_7eitablemanager',['~ITableManager',['../classITableManager.html#a2d2510126a76584bbedba26d00559710',1,'ITableManager']]],
-  ['_7esession',['~Session',['../classSession.html#a8753bb9dee966b7d39abc9b7237cd665',1,'Session']]]
+  ['table',['Table',['../structTable.html#a758484ca0668211d2113264bf54aacf0',1,'Table']]],
+  ['tablemanager',['TableManager',['../classTableManager.html#ae33f3f994f019755552584bec352af9b',1,'TableManager']]],
+  ['tablerow',['TableRow',['../structTableRow.html#acd241036da26a4e3a74f9231a5a4dc8e',1,'TableRow']]],
+  ['trim',['trim',['../utils_8cpp.html#ac81e8ace8f8b6d4c09572038c5d48cf4',1,'trim(std::string &amp;s):&#160;utils.cpp'],['../utils_8h.html#ac81e8ace8f8b6d4c09572038c5d48cf4',1,'trim(std::string &amp;s):&#160;utils.cpp']]],
+  ['trim_5fcopy',['trim_copy',['../utils_8cpp.html#ac72f5466b377314d32ad4e5da7963fdc',1,'trim_copy(std::string s):&#160;utils.cpp'],['../utils_8h.html#ac72f5466b377314d32ad4e5da7963fdc',1,'trim_copy(std::string s):&#160;utils.cpp']]],
+  ['truncate',['Truncate',['../classITableManager.html#ab756ae8e20c78b87d34e775aa7e33051',1,'ITableManager::Truncate()'],['../classTableManager.html#a4399c74900f8e519f331bad23b1d5004',1,'TableManager::Truncate()']]],
+  ['truncatecommandhandler',['TruncateCommandHandler',['../classTruncateCommandHandler.html#a098fe0d8d00545d2f460479a348e7ec7',1,'TruncateCommandHandler']]]
 ];
