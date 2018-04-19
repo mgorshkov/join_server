@@ -29,7 +29,9 @@ add_executable(join_server
 	symdiffcommandhandler.cpp
 	symdiffcommandhandler.h
 	truncatecommandhandler.cpp
-	truncatecommandhandler.h)
+	truncatecommandhandler.h
+	utils.cpp
+	utils.h)
 
 add_executable(join_server_test
 	tablemanager_test.cpp)

@@ -20,16 +20,15 @@ public:
 private:
     void Stop();
 
-    void DoProcessCommand();
+    void DoRead();
     bool GetWriteQueue();
     void DoWrite();
-    void Deliver(std::size_t length);
+    void Deliver();
 
     std::shared_ptr<CommandExecutor> mCommandExecutor;
     boost::asio::io_service& mIoService;
     Context mContext;
     boost::asio::ip::tcp::socket mSocket;
-    static const std::size_t BufSize = 1;
-    std::array<char, BufSize> mReadMsg;
+    boost::asio::streambuf mBuffer;
     std::deque<std::string> mWriteMsgs;
 };

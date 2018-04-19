@@ -24,7 +24,7 @@ Session::~Session()
 void Session::Start()
 {
     mContext.Start();
-    DoProcessCommand();
+    DoRead();
 }
 
 void Session::Stop()
@@ -39,34 +39,28 @@ void Session::Stop()
 #endif
 }
 
-void Session::DoProcessCommand()
+void Session::DoRead()
 {
     auto self(shared_from_this());
 
-#ifdef DEBUG_PRINT
+//#ifdef DEBUG_PRINT
     std::cout << "Session::DoProcessCommand 1, this==" << this << std::endl;
-#endif
+//#endif
 
-    boost::asio::deadline_timer timer(mIoService);
-    const boost::posix_time::time_duration timeout = boost::posix_time::milliseconds{100};
-    timer.expires_from_now(timeout);
-    timer.async_wait(
-        [this, self](boost::system::error_code ec)
-        {
-             if (GetWriteQueue())
-                 DoWrite(); 
-        });
-    boost::asio::async_read(mSocket,
-        boost::asio::buffer(mReadMsg),
+    if (GetWriteQueue())
+        DoWrite();
+
+    boost::asio::async_read_until(mSocket, mBuffer, '\n',
         [this, self](boost::system::error_code ec, std::size_t length)
         {
 #ifdef DEBUG_PRINT
-            std::cout << "Session::DoProcessCommand 2, this==" << this << ", ec=" << ec << ", mReadMsg=" << std::string(&mReadMsg[0], length) << ", length=" << length << std::endl;
+            std::cout << "Session::DoProcessCommand 2, this==" << this << ", ec=" << ec << ", mBuffer=" << &mBuffer << ", length=" << length << std::endl;
 #endif
             if (!ec)
             {
-                Deliver(length);
-                DoProcessCommand();
+                Deliver();
+
+                DoRead();
             }
             else
                 Stop();
@@ -75,24 +69,24 @@ void Session::DoProcessCommand()
 
 bool Session::GetWriteQueue()
 {
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
     std::cout << "Session::GetWriteQueue 1, this==" << this << std::endl;
-//#endif
+#endif
     auto statuses = mContext.GetOutboundQueue();
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
     std::cout << "Session::GetWriteQueue 2, this==" << this << std::endl;
-//#endif
+#endif
     if (statuses.empty())
         return false;
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
     std::cout << "Session::GetWriteQueue 3, this==" << this << std::endl;
-//#endif
+#endif
     std::stringstream str;
     for (const auto& status : statuses)
         str << status;
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
     std::cout << "Session::GetWriteQueue 4, this==" << this << ", str=" << str.str() << std::endl;
-//#endif
+#endif
     mWriteMsgs.push_back(str.str());
     return true;
 }
@@ -112,10 +106,6 @@ void Session::DoWrite()
 #ifdef DEBUG_PRINT
            std::cout << "Session::DoWrite 2, this==" << this << ", ec=" << ec << ", msg=" << mWriteMsgs.front().c_str() << std::endl;
 #endif
-           mWriteMsgs.pop_front();
-#ifdef DEBUG_PRINT
-           std::cout << "Session::DoWrite 3, this==" << this << ", ec=" << ec << std::endl;
-#endif
            if (ec)
                Stop();
            else
@@ -125,13 +115,17 @@ void Session::DoWrite()
 #endif
            }
        });
+     mWriteMsgs.pop_front();
+#ifdef DEBUG_PRINT
+     std::cout << "Session::DoWrite 4, this==" << this << ", ec=" << ec << std::endl;
+#endif
 }
 
-void Session::Deliver(std::size_t length)
+void Session::Deliver()
 {
 #ifdef DEBUG_PRINT
     std::cout << "Session::Deliver, this==" << this << ", mReadMsg.data()=" << mReadMsg.data() << ", mReadMsg.size()=" << mReadMsg.size() << std::endl;
 #endif
 
-    mContext.ProcessData(mReadMsg.data(), length);
+    mContext.ProcessData(&mBuffer);
 }

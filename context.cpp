@@ -1,8 +1,10 @@
 #include <iostream>
 #include <chrono>
-using namespace std::chrono_literals;
 
 #include "context.h"
+#include "utils.h"
+
+using namespace std::chrono_literals;
 
 Context::Context(std::shared_ptr<CommandExecutor> aCommandExecutor)
     : mCommandExecutor(aCommandExecutor)
@@ -40,10 +42,10 @@ void Context::Start()
     mThread = std::move(std::thread(ThreadProc, this, mCommandExecutor));
 }
 
-void Context::ProcessData(const char* aData, std::size_t aSize)
+void Context::ProcessData(boost::asio::streambuf* aStream)
 {
 #ifdef DEBUG_PRINT
-    std::cout << "Context::ProcessData, this==" << this << ", aData=" << aData << ", aSize=" << aSize << ", mDone=" << mDone.load() << std::endl;
+    std::cout << "Context::ProcessData, this==" << this << ", aStream=" << aStream << ", mDone=" << mDone.load() << std::endl;
 #endif
     if (mDone.load())
         return;
@@ -52,16 +54,16 @@ void Context::ProcessData(const char* aData, std::size_t aSize)
 #ifdef DEBUG_PRINT
         std::cout << "Context::ProcessData 2, pos = " << mStream.tellp() << std::endl;
 #endif
-        mStream.write(aData, aSize);
+        mStream << aStream;
 #ifdef DEBUG_PRINT
         std::cout << "Context::ProcessData 3, pos = " << mStream.tellp() << std::endl;
 #endif
     }
     mNotified = true;
     mCondition.notify_one();
-#ifdef DEBUG_PRINT
+//#ifdef DEBUG_PRINT
     std::cout << "Context::ProcessData end, this==" << this << ", stream=" << mStream.str() << std::endl;
-#endif
+//#endif
 }
 
 void Context::Stop()
@@ -89,14 +91,14 @@ CompleteOperationStatuses Context::GetOutboundQueue()
 {
     if (!mQueueNotified.load())
     {
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
         std::cout << "Context::GetOutboundQueue 1" << std::endl;
-//#endif
+#endif
         return CompleteOperationStatuses{};
     }
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
     std::cout << "Context::GetOutboundQueue 2" << std::endl;
-//#endif
+#endif
 //    std::unique_lock<std::mutex> lk(mQueueMutex);
 //    if (std::cv_status::timeout == mQueueCondition.wait_for(lk, 100ms))
 //    {
@@ -145,35 +147,38 @@ CompleteOperationStatuses Context::ProcessStream(std::shared_ptr<CommandExecutor
             {
                 line = line.substr(0, line.length() - 1);
             }
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
             std::cout << "Context::ProcessStream 2, line = " << line << ";" << std::endl;
-//#endif
+#endif
             text.push_back(line);
         }
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
         std::cout << "Context::ProcessStream 3, pos = " << mStream.tellp() << std::endl;
-//#endif
+#endif
         mStream.clear();
         mStream.str("");
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
         std::cout << "Context::ProcessStream 4, stream = " << mStream.str() << ", pos = " << mStream.tellp() << std::endl;
-//#endif
+#endif
         mStream.write(line.c_str(), line.size());
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
         std::cout << "Context::ProcessStream 5, pos = " << mStream.tellp() << ", line = " << line << std::endl;
-//#endif
+#endif
     }
     CompleteOperationStatuses results;
     for (const auto& line: text)    
     {
+        auto lineTrimmed = trim_copy(line);
 //#ifdef DEBUG_PRINT
-        std::cout << "Context::ProcessStream 6, line=" << line << ";" << std::endl;
+        std::cout << "Context::ProcessStream 6, line=" << lineTrimmed << ";" << std::endl;
 //#endif
-        auto result = aCommandExecutor->RunCommand(line);
+        if (lineTrimmed.empty())
+            continue;
+        auto result = aCommandExecutor->RunCommand(lineTrimmed);
         results.push_back(result);
-//#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
         std::cout << "Context::ProcessStream 7, result=" << result << std::endl;
-//#endif
+#endif
     }
     return results;
 }
